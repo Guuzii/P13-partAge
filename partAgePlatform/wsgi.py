@@ -1,5 +1,5 @@
 """
-WSGI config for partAgePlateform project.
+WSGI config for partAgePlatform project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'partAgePlateform.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'partAgePlatform.settings')
 
 application = get_wsgi_application()
