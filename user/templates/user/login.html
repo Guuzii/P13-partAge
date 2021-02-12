@@ -1,0 +1,27 @@
+<!-- USER LOGIN -->
+
+{% extends 'user/index.html' %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h2>Se connecter</h2>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            {% include 'user/includes/form.html' %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <p>Pas de compte ? Pas de problèmes : <a href="{% url 'register' %}">Créer un compte</a></p>
+        </div>
+    </div>
+    
+{% endblock section_content %}

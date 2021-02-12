@@ -1,0 +1,29 @@
+<!-- USER INDEX -->
+
+{% extends 'platform/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    {% include 'user/includes/header.html' %}
+    
+    <section class="page-section">
+        <div class="container">
+            <!-- User Section Heading-->
+            <div class="text-center">
+                <h2 class="page-section-heading text-secondary d-inline-block mb-0">{{ title }}</h2>
+            </div>
+            <!-- Icon Divider-->
+            <div class="divider-custom">
+                <div class="divider-custom-line"></div>
+                <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                <div class="divider-custom-line"></div>
+            </div>
+
+            {% block section_content %}
+            {% endblock %}
+            
+        </div>
+    </section> 
+    
+{% endblock %}

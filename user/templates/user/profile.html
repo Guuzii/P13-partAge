@@ -1,0 +1,32 @@
+<!-- USER PROFILE -->
+
+{% extends 'user/index.html' %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-lg-12 ml-auto">
+            <p class="pre-wrap lead">Identifiant/email : {{ request.user.email}}</p>
+        </div>
+        <div class="col-lg-12 mr-auto">
+            <p class="pre-wrap lead">Prénom : {{ request.user.first_name }}</p>
+        </div>
+        <div class="col-lg-12 mr-auto">
+            <p class="pre-wrap lead">Nom : {{ request.user.last_name }}</p>
+        </div>
+        <div class="col-lg-12 mr-auto">
+            <p class="pre-wrap lead">Date de naissance : {{ request.user.birthdate }}</p>
+        </div>                    
+        <div class="col-lg-12 mr-auto">
+            <p class="pre-wrap lead">Expérience : {{ request.user.experience_point }} points</p>
+        </div>                                        
+        <div class="col-lg-12 mr-auto">
+            <p class="pre-wrap lead">Porte-monnaie : {{ wallet_balance }} Po</p>
+        </div>
+
+        <a class="btn btn-danger btn-outline mx-1" href="{% url 'logout' %}">
+            Se deconnecter
+        </a>
+    </div>
+
+{% endblock section_content %}
