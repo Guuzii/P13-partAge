@@ -19,6 +19,8 @@ from user.forms import (
 )
 
 from user.models.custom_user import CustomUser
+from user.models.document import Document
+from user.models.document_type import DocumentType
 
 # Create your views here.
 
@@ -32,7 +34,7 @@ def handle_uploaded_file(file, filename):
         for chunk in file.chunks(): 
             destination.write(chunk)
 
-    return settings.USER_FILE_UPLOAD_DIR / filename
+    return filename
 
 class Profile(View):
     template_name = 'user/profile.html'
@@ -91,11 +93,15 @@ class UserRegister(View):
             for i, (key, file) in enumerate(files.items()):
                 extension = file.name.split('.')[-1]
                 filename = "file_user_" + str(user.pk) +  "_" + str(i) + "." + extension
-                uploaded_filepath = handle_uploaded_file(file, filename)
+                uploaded_filename = handle_uploaded_file(file, filename)
+
                 if (key == "file_identity"):
-                    print("file_identity path : %s"%uploaded_filepath)
+                    document_type = DocumentType.objects.get(label=settings.DOCUMENT_TYPES[0])
                 else:
-                    print("file_criminal path : %s"%uploaded_filepath)
+                    document_type = DocumentType.objects.get(label=settings.DOCUMENT_TYPES[1])
+
+                document = Document(path=settings.USER_STATIC_UPLOAD_DIR + uploaded_filename, user=user, document_type=document_type)
+                document.save()
 
             return redirect("home")
         else:
@@ -103,3 +109,7 @@ class UserRegister(View):
             self.context["errors"] = form.errors.items()
             return render(request, self.template_name, self.context)
 
+
+class UserDocument(View):
+    def get(self, request, document_id):
+        pass

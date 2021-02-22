@@ -199,6 +199,7 @@ class CustomUserChangeForm(UserChangeForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
+    
     password = ReadOnlyPasswordHashField()
 
     class Meta:
@@ -207,7 +208,7 @@ class CustomUserChangeForm(UserChangeForm):
             'first_name',
             'last_name',
             'email',
-            'birthdate'
+            'birthdate',
         )
 
     def clean_password(self):

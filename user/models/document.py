@@ -13,8 +13,8 @@ class Document(models.Model):
     )
     is_valid = models.BooleanField(default=False)
 
-    id_user = models.ForeignKey('user.Wallet', on_delete=models.CASCADE)
-    id_type = models.ForeignKey('user.DocumentType', on_delete=models.PROTECT)
+    user = models.ForeignKey('user.CustomUser', on_delete=models.PROTECT)
+    document_type = models.ForeignKey('user.DocumentType', on_delete=models.PROTECT)
 
     class Meta:
         verbose_name = _('Document')

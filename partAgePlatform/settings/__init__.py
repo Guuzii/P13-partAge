@@ -14,6 +14,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_URL = "http://localhost:8000/"
 
 
 # Quick-start development settings - unsuitable for production
@@ -142,11 +143,14 @@ USER_TYPES = (
 )
 
 DOCUMENT_TYPES = (
-    "id",
+    "identity",
     "criminal_record",
 )
 
 # User files upload
-USER_FILE_UPLOAD_DIR = Path(__file__).resolve().parent.parent.parent / 'user/uploads/'
+USER_APP_BASEDIR = Path(__file__).resolve().parent.parent.parent / 'user/'
+USER_STATIC_UPLOAD_DIR = 'static/user/uploads/'
+USER_FILE_UPLOAD_DIR = USER_APP_BASEDIR / USER_STATIC_UPLOAD_DIR
+
 
 USER_FILE_ALLOWED_TYPES = ['png', 'jpg', 'jpeg', 'pdf']
