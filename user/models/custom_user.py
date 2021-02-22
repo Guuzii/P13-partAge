@@ -4,9 +4,9 @@ from django.contrib.auth.models import (
 )
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
-from django.utils import timezone
+from django.utils.timezone import now
 
-# Create your models here.
+from user.models.wallet import Wallet
 
 class CustomUserManager(BaseUserManager):
     """
@@ -26,7 +26,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_('Users must have a last name'))
         if not birthdate:
             raise ValueError(_('Users must have a date of birth'))
-
+        
         if not extra_fields['is_superuser']:
             wallet = Wallet()
             wallet.save()
@@ -38,7 +38,7 @@ class CustomUserManager(BaseUserManager):
             last_name=last_name,
             email=self.normalize_email(email),
             birthdate=birthdate,
-            id_wallet=wallet,
+            wallet=wallet,
             **extra_fields
         )
 
@@ -93,7 +93,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     created_at = models.DateField(
         verbose_name=_('User creation date'),
-        default=timezone.now
+        default=now
     )
     experience_point = models.IntegerField(
         verbose_name=_("Experience points"),
@@ -104,7 +104,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)    
 
-    id_wallet = models.ForeignKey('user.Wallet', null=True, on_delete=models.PROTECT)
+    wallet = models.ForeignKey('user.Wallet', null=True, on_delete=models.PROTECT)
+    user_type = models.ForeignKey('user.UserType', null=True, on_delete=models.PROTECT)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'birthdate',]
@@ -118,54 +119,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-
-
-class Wallet(models.Model):
-    balance = models.IntegerField(
-        verbose_name=_('Wallet balance'),
-        default=0
-    )
-
-    class Meta:
-        verbose_name = _('Wallet')
-        verbose_name_plural = _('Wallets')
-
-    def __str__(self):
-        return self.balance
-
-
-class Document(models.Model):
-    created_at = models.DateField(
-        verbose_name=_('Document creation date'),
-        default=timezone.now
-    )
-    path = models.CharField(
-        verbose_name=_('Path to file'),
-        max_length=150,
-    )
-    is_valid = models.BooleanField(default=False)
-
-    id_user = models.ForeignKey('user.Wallet', on_delete=models.CASCADE)
-    id_type = models.ForeignKey('user.DocumentType', on_delete=models.PROTECT)
-
-    class Meta:
-        verbose_name = _('Document')
-        verbose_name_plural = _('Documents')
-
-    def __str__(self):
-        return self.path
-
-
-class DocumentType(models.Model):
-    label = models.CharField(
-        verbose_name=_('Document type label'),
-        max_length=30
-    )
-
-    class Meta:
-        db_table  = 'user_ref_document_type'
-        verbose_name = _('Document type')
-        verbose_name_plural = _('Document types')
-
-    def __str__(self):
-        return self.label

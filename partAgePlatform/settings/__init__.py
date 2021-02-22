@@ -133,3 +133,20 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_URL = '/static/'
+
+
+# Database référence datas
+USER_TYPES = (
+    "Junior",
+    "Senior",
+)
+
+DOCUMENT_TYPES = (
+    "id",
+    "criminal_record",
+)
+
+# User files upload
+USER_FILE_UPLOAD_DIR = Path(__file__).resolve().parent.parent.parent / 'user/uploads/'
+
+USER_FILE_ALLOWED_TYPES = ['png', 'jpg', 'jpeg', 'pdf']

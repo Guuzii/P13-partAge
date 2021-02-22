@@ -21,6 +21,9 @@ media
 *.py[cod]
 *$py.class
 
+### Project specific ###
+user/uploads/*
+
 # C extensions
 *.so
 

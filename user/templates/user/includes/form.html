@@ -10,7 +10,11 @@
     </div>
 {% endif %}
 
-<form action="{% url form_action %}" method="POST">
+{% if form_action == 'register' %}
+    <form action="{% url form_action %}" enctype="multipart/form-data" method="POST">
+{% else %}    
+    <form action="{% url form_action %}" method="POST">
+{% endif %}
     {% csrf_token %}
 
     {% for field in form %}
