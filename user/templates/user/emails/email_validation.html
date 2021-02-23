@@ -1,0 +1,17 @@
+{% autoescape off %}
+
+    <h3>
+        Bonjour {{ user.first_name }} {{ user.last_name }},
+    </h3>
+
+    Vous avez fait une demande d'inscription sur le site {{ domain }}.
+
+    Afin de valider votre adresse email, merci de cliquer sur le lien ci-dessous:
+    <br><br>
+    <a href="{{ protocol }}://{{ domain }}{% url 'verify-email' uidb64=uid token=token %}">Confirmer mon adresse email</a>
+    <br><br>
+
+    Si le clique sur le lien ci-dessus ne fonctionne pas, 
+    vous pouvez copier et coller l'url dans un nouvel onglet de votre navigateur.
+
+{% endautoescape %}

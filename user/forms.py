@@ -4,7 +4,9 @@ from django.contrib.auth.forms import (
     UserCreationForm, 
     UserChangeForm, 
     AuthenticationForm,
-    UsernameField
+    UsernameField,
+    SetPasswordForm,
+    PasswordResetForm
 )
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
@@ -33,7 +35,7 @@ def get_allowed_file_types(input_accept=False):
             allowed_types.append("image/" + file_type)
 
         return allowed_types
-        
+
 
 class CustomUserCreationForm(UserCreationForm):
     """A form for creating new users. Includes all the required
@@ -85,6 +87,7 @@ class CustomUserCreationForm(UserCreationForm):
     )
     password1 = forms.CharField(
         label=_("Mot de passe"),
+        max_length=128,
         widget=forms.PasswordInput(
             attrs={
                 'class': "form-control", 
@@ -96,7 +99,8 @@ class CustomUserCreationForm(UserCreationForm):
         required=True,
     )
     password2 = forms.CharField(
-        label=_("Confirmation du mot de passe"), 
+        label=_("Confirmation du mot de passe"),
+        max_length=128,
         widget=forms.PasswordInput(
             attrs={
                 'class': "form-control", 
@@ -104,7 +108,7 @@ class CustomUserCreationForm(UserCreationForm):
             },
         ),
         strip=False,
-        help_text=_("Saisissez le même mot de passe que celui entré précedement"),
+        help_text=_("Saisissez le même mot de passe que le précédent"),
         required=True,
     )
     file_identity = forms.FileField(
@@ -157,7 +161,7 @@ class CustomUserCreationForm(UserCreationForm):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
         if password1 and password2 and password1 != password2:
-            raise ValidationError(_("Les mots de passe ne sont pas la mêmes"))
+            raise ValidationError(_("Les mots de passe ne sont pas les mêmes"))
         return password2
 
     def clean_file_identity(self):
@@ -248,3 +252,68 @@ class CustomUserLoginForm(AuthenticationForm):
             'username', 
             'password'
         )
+
+
+class CustomUserPwdResetForm(SetPasswordForm):
+    """Change password form."""    
+    new_password1 = forms.CharField(
+        label=_("Nouveau mot de passe"),
+        max_length=128,
+        widget=forms.PasswordInput(
+            attrs={
+                'class': "form-control", 
+                'placeholder': _("Mot de passe"),
+            },
+        ),
+        strip=False,
+        help_text=password_validation.password_validators_help_text_html(),
+        required=True,
+    )
+
+    new_password2 = forms.CharField(
+        label=_("Confirmation du mot de passe"),
+        max_length=128,
+        widget=forms.PasswordInput(
+            attrs={
+                'class': "form-control", 
+                'placeholder': _("Confirmer mot de passe"),
+            },
+        ),
+        strip=False,
+        help_text=_("Saisissez le même mot de passe que le précédent"),
+        required=True,
+    )
+
+    def clean_new_password2(self):
+        # Check that the two password entries match
+        new_password1 = self.cleaned_data.get('new_password1')
+        new_password2 = self.cleaned_data.get('new_password2')
+        if new_password1 and new_password2 and new_password1 != new_password2:
+            raise ValidationError(_("Les mots de passe ne sont pas les mêmes"))
+        return new_password2
+
+
+class CustomUserPwdForgotForm(PasswordResetForm):
+    """User forgot password, check via email form."""
+    email = forms.EmailField(
+        label=_("Email"),
+        widget=forms.EmailInput(
+            attrs={
+                'class': "form-control", 
+                'placeholder': _("Email"),
+            }
+        ),
+        required=True,
+    )
+
+    def clean_email(self):
+        # Check if email exists
+        email = self.cleaned_data.get("email")     
+        if not CustomUser.objects.filter(email__iexact=email).exists():
+            raise ValidationError(
+                "Aucun utilisateur avec l'email %(email)s trouvé.",
+                code="email",
+                params={"email": email},
+            )
+        return email
+

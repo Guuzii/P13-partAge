@@ -99,6 +99,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name=_("Experience points"),
         default=0
     )
+    reset_password = models.BooleanField(default=False)
     email_validated = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)

@@ -55,6 +55,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # receive email in console for test
+
 ROOT_URLCONF = 'partAgePlatform.urls'
 
 TEMPLATES = [
