@@ -33,6 +33,7 @@ def get_allowed_file_types(input_accept=False):
             allowed_types.append("image/" + file_type)
 
         return allowed_types
+        
 
 class CustomUserCreationForm(UserCreationForm):
     """A form for creating new users. Includes all the required

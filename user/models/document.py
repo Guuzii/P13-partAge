@@ -13,7 +13,7 @@ class Document(models.Model):
     )
     is_valid = models.BooleanField(default=False)
 
-    user = models.ForeignKey('user.CustomUser', on_delete=models.PROTECT)
+    user = models.ForeignKey('user.CustomUser', on_delete=models.CASCADE)
     document_type = models.ForeignKey('user.DocumentType', on_delete=models.PROTECT)
 
     class Meta:
@@ -21,4 +21,4 @@ class Document(models.Model):
         verbose_name_plural = _('Documents')
 
     def __str__(self):
-        return self.path
+        return self.document_type.label
