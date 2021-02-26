@@ -91,7 +91,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     birthdate = models.DateField(
         verbose_name=_('Date of birth'),
     )
-    created_at = models.DateField(
+    created_at = models.DateTimeField(
         verbose_name=_('User creation date'),
         default=now
     )

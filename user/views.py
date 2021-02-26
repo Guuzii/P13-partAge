@@ -94,22 +94,6 @@ class UserProfile(View):
             return redirect('login')
 
 
-class UserLogin(LoginView):    
-    template_name = 'user/login.html'
-    authentication_form = CustomUserLoginForm
-    extra_context = {
-        'title': _("CONNEXION"),
-        'form_action': 'login',
-        'submit_button_label': _("Connexion"),
-    }
-
-
-class UserLogout(LogoutView):    
-    def get(self, request):
-        """Logout authenticated user and redirect to Homepage"""
-        return redirect("home")
-
-
 class UserRegister(View):
     template_name = 'user/register.html'
     email_template = 'user/emails/email_validation.html'
@@ -130,7 +114,7 @@ class UserRegister(View):
         if (form.is_valid()):
             form.save()
             
-            user = CustomUser.objects.get(email=form.cleaned_dat.get('email'))
+            user = CustomUser.objects.get(email=form.cleaned_data.get('email'))
             files = {
                 'file_identity': form.cleaned_data.get('file_identity'),
                 'file_criminal': form.cleaned_data.get('file_criminal')
@@ -163,6 +147,22 @@ class UserRegister(View):
             self.context['form'] = form
             self.context['errors'] = form.errors.items()
             return render(request, self.template_name, self.context)
+
+
+class UserLogin(LoginView):    
+    template_name = 'user/login.html'
+    authentication_form = CustomUserLoginForm
+    extra_context = {
+        'title': _("CONNEXION"),
+        'form_action': 'login',
+        'submit_button_label': _("Connexion"),
+    }
+
+
+class UserLogout(LogoutView):    
+    def get(self, request):
+        """Logout authenticated user and redirect to Homepage"""
+        return redirect("home")
 
 
 class UserVerifyEmail(View):
