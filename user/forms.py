@@ -253,6 +253,21 @@ class CustomUserLoginForm(AuthenticationForm):
             'password'
         )
 
+    def clean_username(self):
+        # Check if email exists
+        email = self.cleaned_data.get("username")    
+        if CustomUser.objects.filter(email__iexact=email).exists():
+            user = CustomUser.objects.get(email__iexact=email)
+
+            if not user.is_active:
+                print("------------------- USER NOT ACTIVE ------------------")
+                raise ValidationError(
+                    "Connexion impossible car votre compte est n'est pas actif",
+                    code="inactive"
+                )
+
+        return email
+
 
 class CustomUserPwdResetForm(SetPasswordForm):
     """Change password form."""    
@@ -296,24 +311,12 @@ class CustomUserPwdResetForm(SetPasswordForm):
 class CustomUserPwdForgotForm(PasswordResetForm):
     """User forgot password, check via email form."""
     email = forms.EmailField(
-        label=_("Email"),
+        label=_("Adresse email"),
         widget=forms.EmailInput(
             attrs={
                 'class': "form-control", 
-                'placeholder': _("Email"),
+                'placeholder': _("Adresse email"),
             }
         ),
         required=True,
     )
-
-    def clean_email(self):
-        # Check if email exists
-        email = self.cleaned_data.get("email")     
-        if not CustomUser.objects.filter(email__iexact=email).exists():
-            raise ValidationError(
-                "Aucun utilisateur avec l'email %(email)s trouvé.",
-                code="email",
-                params={"email": email},
-            )
-        return email
-

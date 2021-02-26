@@ -12,6 +12,8 @@
 
 {% if form_action == 'register' %}
     <form action="{% url form_action %}" enctype="multipart/form-data" method="POST">
+{% elif form_action == 'pwd-reset'%}
+    <form action="{% url form_action uidb64=uid token=token %}" enctype="multipart/form-data" method="POST">
 {% else %}    
     <form action="{% url form_action %}" method="POST">
 {% endif %}
