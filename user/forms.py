@@ -260,9 +260,8 @@ class CustomUserLoginForm(AuthenticationForm):
             user = CustomUser.objects.get(email__iexact=email)
 
             if not user.is_active:
-                print("------------------- USER NOT ACTIVE ------------------")
                 raise ValidationError(
-                    "Connexion impossible car votre compte est n'est pas actif",
+                    _("Connexion impossible car ce compte n'est pas actif"),
                     code="inactive"
                 )
 

@@ -10,6 +10,14 @@
     </div>
 {% endif %}
 
+{% if not errors and form.errors %}
+    <div style="color: red;">
+        {% autoescape off %}
+            {{ form.errors }}
+        {% endautoescape %}
+    </div>
+{% endif %}
+
 {% if form_action == 'register' %}
     <form action="{% url form_action %}" enctype="multipart/form-data" method="POST">
 {% elif form_action == 'pwd-reset'%}
