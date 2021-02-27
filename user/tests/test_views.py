@@ -25,7 +25,7 @@ from user.forms import (
 # Create your tests here.
 
 class HomePageTestCase(TestCase):
-    def test_homepage(self):
+    def test_homepage_get(self):
         response = self.client.get(reverse('home'))
 
         # Test status_code/redirection and template used
@@ -191,6 +191,10 @@ class UserLoginView(TestCase):
 
         # Test errors not empty
         self.assertTrue(len(response.context['form'].errors) > 0)
+
+        # Test status_code/redirection and template used
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(template_name="user/login.html")
         
     def test_user_login_post_inactive_user(self):
         post_args = {
@@ -207,6 +211,10 @@ class UserLoginView(TestCase):
         self.assertTrue(len(response.context['form'].errors) > 0)
         for error in response.context['form'].errors:
             self.assertIn(error, ('username',))
+
+        # Test status_code/redirection and template used
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(template_name="user/login.html")
 
 
 class UserProfileView(TestCase):
@@ -240,3 +248,34 @@ class UserProfileView(TestCase):
         # Test status_code/redirection and template used
         self.assertRedirects(response=response, expected_url=reverse('login'))
         self.assertTemplateUsed(template_name="user/login.html")
+
+
+class UserLogoutView(TestCase):
+    def setUp(self):
+        self.test_user = CustomUser.objects.create_user(
+            first_name="testeur",
+            last_name="test",
+            email="test@test.fr",
+            birthdate="1900-01-01",
+            password="test123+",
+            email_validated=True,
+            is_active=True,
+            is_superuser=False
+        )
+        self.client.login(username="test@test.fr", password="test123+")
+
+    def test_user_logout_get(self):
+        # Test user is authenticated
+        self.assertIsNotNone(self.client.session.get("_auth_user_id"))
+        self.assertEqual(self.test_user.pk, int(self.client.session.get("_auth_user_id"))) 
+        
+        response = self.client.get(reverse("logout"))
+
+        # Test user is not authenticated
+        self.assertIsNone(self.client.session.get("_auth_user_id")) 
+
+        # Test status_code/redirection and template used
+        self.assertRedirects(response=response, expected_url=reverse('home'))
+        self.assertTemplateUsed(template_name="platform/home.html")
+
+
