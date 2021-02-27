@@ -154,5 +154,4 @@ USER_APP_BASEDIR = Path(__file__).resolve().parent.parent.parent / 'user/'
 USER_STATIC_UPLOAD_DIR = 'static/user/uploads/'
 USER_FILE_UPLOAD_DIR = USER_APP_BASEDIR / USER_STATIC_UPLOAD_DIR
 
-
 USER_FILE_ALLOWED_TYPES = ['png', 'jpg', 'jpeg', 'pdf']

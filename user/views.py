@@ -181,7 +181,7 @@ class UserVerifyEmail(View):
         if user is not None and account_activation_token.check_token(user, token):
             user.email_validated = True
             user.save()
-            self.context['verification_message'] = _('Votre adresse email a été validée avec succés')
+            self.context['verification_message'] = _("Votre adresse email a été validée avec succés")
             return render(request, self.template_name, self.context)
         else:
             self.context['verification_message'] = _("Le lien de confirmation de votre adresse mail n'est plus valide.")
@@ -296,6 +296,12 @@ class UserResetPwd(View):
                 user.is_active = True
                 user.reset_password = False
                 user.save()
+                
+                messages.success(
+                    request, 
+                    message=_("Votre mot de passe à bien été modifié."),
+                    extra_tags="alert-success"
+                )
 
                 return redirect('home')
             else:

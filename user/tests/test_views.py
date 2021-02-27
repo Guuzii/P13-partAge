@@ -5,8 +5,11 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core import mail
 from django.contrib.messages import get_messages, get_level
 from django.conf import settings
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 
 from unittest.mock import Mock, patch
 
@@ -21,6 +24,8 @@ from user.forms import (
     CustomUserPwdForgotForm,
     CustomUserPwdResetForm
 )
+
+from user.tokens import account_activation_token, password_reset_token
 
 # Create your tests here.
 
@@ -72,6 +77,10 @@ class UserRegisterView(TestCase):
         user_documents = Document.objects.filter(user=last_user_created)
         self.assertEqual(last_user_created.email, "test@test.fr")
         self.assertEqual(len(user_documents), 2)
+
+        # Test email sended
+        sended_email = len(mail.outbox)
+        self.assertEqual(sended_email, 1)
         
         # Test messages not empty and messages content
         messages = list(get_messages(response.wsgi_request))
@@ -279,3 +288,56 @@ class UserLogoutView(TestCase):
         self.assertTemplateUsed(template_name="platform/home.html")
 
 
+class UserVerifyEmailView(TestCase):
+    def setUp(self):
+        self.test_user = CustomUser.objects.create_user(
+            first_name="testeur",
+            last_name="test",
+            email="test@test.fr",
+            birthdate="1900-01-01",
+            password="test123+",
+            email_validated=False,
+            is_active=False,
+            is_superuser=False
+        )
+        self.token = account_activation_token.make_token(self.test_user)
+        self.uidb64 = urlsafe_base64_encode(force_bytes(self.test_user.pk))
+
+    def test_user_verify_email_valid_link(self):
+        response = self.client.get(reverse('verify-email', args=[self.uidb64, self.token]))
+
+        verified_user = CustomUser.objects.get(pk=self.test_user.pk)
+
+        # Test user email validated
+        self.assertTrue(verified_user.email_validated)
+
+        # Test email verification message
+        self.assertIsNotNone(response.context['verification_message'])
+        self.assertEqual(
+            response.context['verification_message'],
+            "Votre adresse email a été validée avec succés"
+        )
+
+        # Test status_code/redirection and template used
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(template_name="user/email_verify.html")
+
+    def test_user_verify_email_invalid_link(self):
+        self.uidb64 = urlsafe_base64_encode(force_bytes(-1))
+        response = self.client.get(reverse('verify-email', args=[self.uidb64, self.token]))
+
+        verified_user = CustomUser.objects.get(pk=self.test_user.pk)
+
+        # Test user email not validated
+        self.assertFalse(verified_user.email_validated)
+
+        # Test email verification message
+        self.assertIsNotNone(response.context['verification_message'])
+        self.assertEqual(
+            response.context['verification_message'],
+            "Le lien de confirmation de votre adresse mail n'est plus valide."
+        )
+
+        # Test status_code/redirection and template used
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(template_name="user/email_verify.html")
