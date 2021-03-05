@@ -6,12 +6,10 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core import mail
-from django.contrib.messages import get_messages, get_level
+from django.contrib.messages import get_messages
 from django.conf import settings
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
-
-from unittest.mock import Mock, patch
 
 from user.models.custom_user import CustomUser
 from user.models.document_type import DocumentType
@@ -38,7 +36,7 @@ class HomePageTestCase(TestCase):
         self.assertTemplateUsed(template_name="platform/home.html")
 
 
-class UserRegisterView(TestCase):
+class UserRegisterTestCase(TestCase):
     def setUp(self):
         self.test_register_form = CustomUserCreationForm()
         for document_type in settings.DOCUMENT_TYPES:
@@ -135,7 +133,7 @@ class UserRegisterView(TestCase):
             self.assertIn(error[0], ('file_identity', 'file_criminal'))
 
 
-class UserLoginView(TestCase):
+class UserLoginTestCase(TestCase):
     def setUp(self):
         self.test_user_active = CustomUser.objects.create_user(
             first_name="testeur",
@@ -226,7 +224,7 @@ class UserLoginView(TestCase):
         self.assertTemplateUsed(template_name="user/login.html")
 
 
-class UserProfileView(TestCase):
+class UserProfileTestCase(TestCase):
     def setUp(self):
         self.test_user = CustomUser.objects.create_user(
             first_name="testeur",
@@ -259,7 +257,7 @@ class UserProfileView(TestCase):
         self.assertTemplateUsed(template_name="user/login.html")
 
 
-class UserLogoutView(TestCase):
+class UserLogoutTestCase(TestCase):
     def setUp(self):
         self.test_user = CustomUser.objects.create_user(
             first_name="testeur",
@@ -288,7 +286,7 @@ class UserLogoutView(TestCase):
         self.assertTemplateUsed(template_name="platform/home.html")
 
 
-class UserVerifyEmailView(TestCase):
+class UserVerifyEmailTestCase(TestCase):
     def setUp(self):
         self.test_user = CustomUser.objects.create_user(
             first_name="testeur",
@@ -341,3 +339,234 @@ class UserVerifyEmailView(TestCase):
         # Test status_code/redirection and template used
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(template_name="user/email_verify.html")
+
+
+class UserForgotPwdTestCase(TestCase):
+    def setUp(self):
+        self.test_user = CustomUser.objects.create_user(
+            first_name="testeur",
+            last_name="test",
+            email="test@test.fr",
+            birthdate="1900-01-01",
+            password="test123+",
+            email_validated=True,
+            is_active=True,
+            is_superuser=False
+        )
+        self.test_pwd_forgot_form = CustomUserPwdForgotForm()
+
+    def test_user_pwd_forgot_get(self):
+        response = self.client.get(reverse('pwd-forgot'))        
+        
+        # Test form used is the right one
+        self.assertEqual(
+            response.context["form"].fields.keys(), self.test_pwd_forgot_form.fields.keys()
+        )
+
+        # Test status_code/redirection and template used
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(template_name="user/password_forgot.html")
+
+    def test_user_pwd_forgot_authenticated_get(self):
+        self.client.login(username="test@test.fr", password="test123+")
+        response = self.client.get(reverse('pwd-forgot'))
+
+        updated_user = CustomUser.objects.get(pk=self.test_user.pk)
+        
+        # Test email sended
+        sended_email = len(mail.outbox)
+        self.assertEqual(sended_email, 1)
+        
+        # Test user is not authenticated
+        self.assertIsNone(self.client.session.get("_auth_user_id"))
+
+        # Test user update
+        self.assertTrue(updated_user.reset_password)
+        self.assertFalse(updated_user.is_active)
+
+        # Test status_code/redirection and template used
+        self.assertRedirects(response=response, expected_url=reverse('home'))
+        self.assertTemplateUsed(template_name="platform/home.html")
+
+    def test_user_pwd_forgot_post_valid_form_user_exist_and_active(self):
+        post_args = {
+            'email': "test@test.fr",
+        }
+
+        response = self.client.post(reverse('pwd-forgot'), post_args)
+
+        updated_user = CustomUser.objects.get(pk=self.test_user.pk)
+        
+        # Test email sended
+        sended_email = len(mail.outbox)
+        self.assertEqual(sended_email, 1)
+
+        # Test user update
+        self.assertTrue(updated_user.reset_password)
+        self.assertFalse(updated_user.is_active)
+        
+        # Test messages not empty and messages content
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(
+            str(messages[0]), 
+            "Si cette adresse email existe, un email sera envoyé sur ce compte"
+        )
+
+        # Test status_code/redirection and template used
+        self.assertRedirects(response=response, expected_url=reverse('home'))
+        self.assertTemplateUsed(template_name="platform/home.html")
+
+    def test_user_pwd_forgot_post_valid_form_user_undefined(self):
+        post_args = {
+            'email': "testeur@test.fr",
+        }
+
+        response = self.client.post(reverse('pwd-forgot'), post_args)
+        
+        # Test email sended
+        sended_email = len(mail.outbox)
+        self.assertEqual(sended_email, 0)
+        
+        # Test messages not empty and messages content
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(
+            str(messages[0]), 
+            "Si cette adresse email existe, un email sera envoyé sur ce compte"
+        )
+
+        # Test status_code/redirection and template used
+        self.assertRedirects(response=response, expected_url=reverse('home'))
+        self.assertTemplateUsed(template_name="platform/home.html")
+
+    def test_user_pwd_forgot_post_valid_form_user_inactive(self):
+        self.test_user.is_active = False
+        self.test_user.save()
+        post_args = {
+            'email': "test@test.fr",
+        }
+
+        response = self.client.post(reverse('pwd-forgot'), post_args)
+        
+        # Test email sended
+        sended_email = len(mail.outbox)
+        self.assertEqual(sended_email, 0)
+        
+        # Test messages not empty and messages content
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(
+            str(messages[0]), 
+            "Si cette adresse email existe, un email sera envoyé sur ce compte"
+        )
+
+        # Test status_code/redirection and template used
+        self.assertRedirects(response=response, expected_url=reverse('home'))
+        self.assertTemplateUsed(template_name="platform/home.html")
+
+    def test_user_pwd_forgot_post_invalid_form(self):
+        post_args = {
+            'email': "test.test",
+        }
+
+        response = self.client.post(reverse('pwd-forgot'), post_args)
+
+        # Test errors not empty and errors content
+        self.assertTrue(len(response.context['errors']) > 0)
+        for error in response.context['errors']:
+            self.assertIn(error[0], ('email',))
+
+        # Test status_code/redirection and template used
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(template_name="user/password_forgot.html")
+
+
+class UserForgotResetTestCase(TestCase):
+    def setUp(self):
+        self.test_user = CustomUser.objects.create_user(
+            first_name="testeur",
+            last_name="test",
+            email="test@test.fr",
+            birthdate="1900-01-01",
+            password="test123+",
+            email_validated=True,
+            is_active=False,
+            reset_password=True,
+            is_superuser=False
+        )
+        self.test_pwd_reset_form = CustomUserPwdResetForm(self.test_user)
+        self.token = account_activation_token.make_token(self.test_user)
+        self.uidb64 = urlsafe_base64_encode(force_bytes(self.test_user.pk))
+
+    def test_user_pwd_reset_get_valid_link(self):
+        response = self.client.get(reverse('pwd-reset', args=[self.uidb64, self.token]))        
+        
+        # Test form used is the right one
+        self.assertEqual(
+            response.context["form"].fields.keys(), self.test_pwd_reset_form.fields.keys()
+        )
+
+        # Test context content
+        self.assertIsNotNone(response.context['uid'])
+        self.assertEqual(response.context['uid'], self.uidb64)
+        self.assertIsNotNone(response.context['token'])
+        self.assertEqual(response.context['token'], self.token)
+
+        # Test status_code/redirection and template used
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(template_name="user/password_reset.html")
+
+    def test_user_pwd_reset_get_invalid_link(self):
+        self.uidb64 = urlsafe_base64_encode(force_bytes(-1))
+        response = self.client.get(reverse('pwd-reset', args=[self.uidb64, self.token]))
+
+        # Test email verification message
+        self.assertIsNotNone(response.context['reset_message'])
+        self.assertEqual(
+            response.context['reset_message'],
+            "Le Lien de changement de mot de passe n'est plus valide"
+        )
+
+    def test_user_pwd_reset_post_valid_form(self):
+        post_args = {
+            'new_password1': "devtest123+",
+            'new_password2': "devtest123+",
+        }
+
+        response = self.client.post(reverse('pwd-reset', kwargs={'uidb64': self.uidb64, 'token': self.token}), post_args)
+
+        updated_user = CustomUser.objects.get(pk=self.test_user.pk)
+
+        # Test user update
+        self.assertTrue(updated_user.is_active)
+        self.assertFalse(updated_user.reset_password)
+        
+        # Test messages not empty and messages content
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(
+            str(messages[0]), 
+            "Votre mot de passe à bien été modifié."
+        )
+
+        # Test status_code/redirection and template used
+        self.assertRedirects(response=response, expected_url=reverse('home'))
+        self.assertTemplateUsed(template_name="platform/home.html")
+
+    def test_user_pwd_reset_post_invalid_form(self):
+        post_args = {
+            'new_password1': "devtest123+",
+            'new_password2': "devtest123456+",
+        }
+
+        response = self.client.post(reverse('pwd-reset', kwargs={'uidb64': self.uidb64, 'token': self.token}), post_args)
+
+        # Test errors not empty and errors content
+        self.assertTrue(len(response.context['errors']) > 0)
+        for error in response.context['errors']:
+            self.assertIn(error[0], ('new_password2',))
+
+        # Test status_code/redirection and template used
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(template_name="user/password_reset.html")

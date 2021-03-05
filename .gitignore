@@ -22,7 +22,6 @@ media
 *$py.class
 
 ### Project specific ###
-user/static/user/uploads/*
 
 # C extensions
 *.so
