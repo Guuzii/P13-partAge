@@ -1,0 +1,5 @@
+ul.messages {
+    position: fixed;
+    bottom: 0;
+    list-style: none;
+}
