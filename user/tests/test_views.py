@@ -38,7 +38,7 @@ class HomePageTestCase(TestCase):
         self.assertTemplateUsed(template_name="platform/home.html")
 
 
-class UserRegisterView(TestCase):
+class UserRegisterTestCase(TestCase):
     def setUp(self):
         self.test_register_form = CustomUserCreationForm()
         for document_type in settings.DOCUMENT_TYPES:
@@ -135,7 +135,7 @@ class UserRegisterView(TestCase):
             self.assertIn(error[0], ('file_identity', 'file_criminal'))
 
 
-class UserLoginView(TestCase):
+class UserLoginTestCase(TestCase):
     def setUp(self):
         self.test_user_active = CustomUser.objects.create_user(
             first_name="testeur",
@@ -226,7 +226,7 @@ class UserLoginView(TestCase):
         self.assertTemplateUsed(template_name="user/login.html")
 
 
-class UserProfileView(TestCase):
+class UserProfileTestCase(TestCase):
     def setUp(self):
         self.test_user = CustomUser.objects.create_user(
             first_name="testeur",
@@ -259,7 +259,7 @@ class UserProfileView(TestCase):
         self.assertTemplateUsed(template_name="user/login.html")
 
 
-class UserLogoutView(TestCase):
+class UserLogoutTestCase(TestCase):
     def setUp(self):
         self.test_user = CustomUser.objects.create_user(
             first_name="testeur",
@@ -288,7 +288,7 @@ class UserLogoutView(TestCase):
         self.assertTemplateUsed(template_name="platform/home.html")
 
 
-class UserVerifyEmailView(TestCase):
+class UserVerifyEmailTestCase(TestCase):
     def setUp(self):
         self.test_user = CustomUser.objects.create_user(
             first_name="testeur",

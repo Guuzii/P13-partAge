@@ -17,16 +17,7 @@ class CustomUserManager(BaseUserManager):
         """
         Creates and saves a User with the given first_name, last_name, email, date of
         birth and password.
-        """
-        if not email:
-            raise ValueError(_('Users must have an email address'))
-        if not first_name:
-            raise ValueError(_('Users must have a first name'))
-        if not last_name:
-            raise ValueError(_('Users must have a last name'))
-        if not birthdate:
-            raise ValueError(_('Users must have a date of birth'))
-        
+        """        
         if not extra_fields['is_superuser']:
             wallet = Wallet()
             wallet.save()
@@ -56,13 +47,6 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_admin', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_active', True)
-        
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError(_('Superuser must have is_superuser=True.'))
-        if extra_fields.get('is_admin') is not True:
-            raise ValueError(_('Superuser must have is_admin=True.'))
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError(_('Superuser must have is_staff=True.'))
 
         return self.create_user(
             first_name=first_name,
