@@ -11,7 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.models import User
 from django.contrib.auth.views import (
     LoginView, 
     LogoutView
@@ -26,9 +25,11 @@ from user.forms import (
     CustomUserPwdForgotForm,
     CustomUserPwdResetForm
 )
+
 from user.models.custom_user import CustomUser
 from user.models.document import Document
 from user.models.document_type import DocumentType
+
 from user.tokens import account_activation_token, password_reset_token
 
 # Create your views here.
@@ -203,12 +204,12 @@ class UserForgotPwd(View):
             user = CustomUser.objects.get(pk=request.user.pk)
             logout(request)
 
-            user.is_active = False
-            user.reset_password = True
-
             email_sended = custom_send_email(request, user, self.email_subject, self.email_template,pwd=True)
 
             if email_sended:
+                user.is_active = False
+                user.reset_password = True
+                
                 messages.success(
                     request, 
                     message=_("Un email vous a été envoyé. Merci de cliquer sur le lien contenu dans celui-ci afin de modifier votre mot de passe."),
@@ -237,16 +238,16 @@ class UserForgotPwd(View):
                     user.is_active = False
                     user.reset_password = True
 
-                    email_sended = custom_send_email(request, user, self.email_subject, self.email_template,pwd=True)
-
-                    messages.success(
-                        request, 
-                        message=_("Si cette adresse email existe, un email sera envoyé sur ce compte"),
-                        extra_tags="alert-success"
-                    )             
+                    email_sended = custom_send_email(request, user, self.email_subject, self.email_template,pwd=True)             
                     
                     if (email_sended):
-                        user.save()
+                        user.save()                
+
+            messages.success(
+                request, 
+                message=_("Si cette adresse email existe, un email sera envoyé sur ce compte"),
+                extra_tags="alert-success"
+            )
 
             return redirect('home')
         else:

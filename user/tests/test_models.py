@@ -1,31 +1,10 @@
-from os.path import isfile as os_isfile
-from os import remove as os_removefile
-
 from django.test import TestCase
-from django.urls import reverse
-from django.contrib.auth import authenticate, login, logout
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core import mail
-from django.contrib.messages import get_messages, get_level
-from django.conf import settings
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-
-from unittest.mock import Mock, patch
 
 from user.models.custom_user import CustomUser
 from user.models.document_type import DocumentType
 from user.models.document import Document
 from user.models.user_type import UserType
 from user.models.wallet import Wallet
-
-from user.forms import (
-    CustomUserCreationForm,
-    CustomUserLoginForm,
-    CustomUserChangeForm,
-    CustomUserPwdForgotForm,
-    CustomUserPwdResetForm
-)
 
 # Create your tests here.
 
