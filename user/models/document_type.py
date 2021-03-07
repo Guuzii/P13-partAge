@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+
 class DocumentType(models.Model):
     label = models.CharField(
         verbose_name=_('Document type label'),

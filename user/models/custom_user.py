@@ -1,12 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser
-)
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 
 from user.models.wallet import Wallet
+
 
 class CustomUserManager(BaseUserManager):
     """

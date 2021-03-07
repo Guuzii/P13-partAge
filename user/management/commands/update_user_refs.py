@@ -31,6 +31,4 @@ class Command(BaseCommand):
             else:
                 print("Existing document type :", document_type)
         
-
         self.stdout.write("----------------- REFS IMPORTS DONE -----------------")
-
