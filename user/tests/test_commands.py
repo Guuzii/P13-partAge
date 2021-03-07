@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 
 from user.management.commands.update_user_refs import Command
 
-# Custom manage.py command database_update
+
 class CommandTest(TestCase):
     @patch('user.management.commands.update_user_refs.Command.handle')
     def test_custom_command_update_user_refs(self, mock_get):

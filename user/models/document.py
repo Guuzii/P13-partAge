@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
+
 class Document(models.Model):
     created_at = models.DateField(
         verbose_name=_('Document creation date'),

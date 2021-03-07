@@ -9,11 +9,9 @@ from user.models.user_type import UserType
 from user.models.document import Document
 from user.models.document_type import DocumentType
 from user.models.wallet import Wallet
-from .forms import (
-    CustomUserCreationForm, CustomUserChangeForm
-)
 
-# Register your models here.
+from user.forms import CustomUserCreationForm, CustomUserChangeForm
+
 class UserDocuments(admin.TabularInline):    
     model = Document
     extra = 0

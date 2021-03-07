@@ -32,7 +32,6 @@ from user.models.document_type import DocumentType
 
 from user.tokens import account_activation_token, password_reset_token
 
-# Create your views here.
 
 def handle_uploaded_file(file, filename):
     with open(settings.USER_FILE_UPLOAD_DIR / filename, 'wb+') as destination:

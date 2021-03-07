@@ -6,7 +6,6 @@ from user.models.document import Document
 from user.models.user_type import UserType
 from user.models.wallet import Wallet
 
-# Create your tests here.
 
 class walletModelTestCase(TestCase):
     def setUp(self):

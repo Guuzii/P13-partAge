@@ -25,7 +25,6 @@ from user.forms import (
 
 from user.tokens import account_activation_token, password_reset_token
 
-# Create your tests here.
 
 class HomePageTestCase(TestCase):
     def test_homepage_get(self):
