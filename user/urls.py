@@ -7,7 +7,7 @@ urlpatterns = [
     path('login/', views.UserLogin.as_view(), name='login'),
     path('register/', views.UserRegister.as_view(), name='register'),
     path('logout/', views.UserLogout.as_view(), name='logout'),
-    path('verify/<uidb64>/<token>', views.UserVerifyEmail.as_view(), name='verify-email'),
+    path('verify/<uidb64>/<token>/', views.UserVerifyEmail.as_view(), name='verify-email'),
     path('pwd/forgot/', views.UserForgotPwd.as_view(), name='pwd-forgot'),
-    path('pwd/reset/<uidb64>/<token>', views.UserResetPwd.as_view(), name='pwd-reset')
+    path('pwd/reset/<uidb64>/<token>/', views.UserResetPwd.as_view(), name='pwd-reset')
 ]

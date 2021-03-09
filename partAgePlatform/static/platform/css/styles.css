@@ -1,5 +1,22 @@
+/******************************/
+/*      GLOBAL STYLES      */
+/******************************/
 ul.messages {
     position: fixed;
     bottom: 0;
     list-style: none;
+}
+
+
+/******************************/
+/*      MESSAGING STYLES      */
+/******************************/
+#conversation-list, #conversation-messages-list {
+    height: 400px;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+}
+
+#conversation-list:hover body, #conversation-messages-list:hover body {
+    overflow: hidden;
 }

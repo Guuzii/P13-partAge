@@ -246,7 +246,7 @@ class UserProfileTestCase(TestCase):
 
         # Test status_code/redirection and template used
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(template_name="user/profile.html")
+        self.assertTemplateUsed(template_name="user/login.html")
 
     def test_user_profile_redirect_login(self):
         response = self.client.get(reverse('user-profile'))

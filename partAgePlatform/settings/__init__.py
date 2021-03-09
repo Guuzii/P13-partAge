@@ -153,7 +153,8 @@ DOCUMENT_TYPES = (
 
 MESSAGE_STATUS = (
     "sended",
-    "modified"
+    "modified",
+    "readed",
 )
 
 # User files upload

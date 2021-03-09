@@ -1,0 +1,25 @@
+<!-- MESSAGING CONVERSATION -->
+
+{% extends 'messaging/index.html' %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>Conversation avec {{ related_user.first_name }} {{ related_user.last_name }}</h3>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div id="conversation-messages-list" class="list-group w-100">
+            {% for message in conversation_messages %}
+                <div class="list-group-item w-75 {% if message.sender_user == related_user %}align-self-start{% else %}align-self-end{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock section_content %}

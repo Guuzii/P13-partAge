@@ -40,4 +40,10 @@
     {% endfor %}
     
     <button type="submit" class="btn btn-primary">{{ submit_button_label }}</button>
+    
+    {% if form_action == 'register' or form_action == 'pwd-forgot' %}
+        <a class="btn btn-danger btn-outline mx-1" href="{% url 'login' %}">
+            Annuler
+        </a>
+    {% endif %}
 </form>
