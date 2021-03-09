@@ -8,7 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import ugettext_lazy as _
 
 
-class MessageInbox(View):
+class MessageInboxView(View):
     template_name = 'messaging/inbox.html'
     context = {
         'title': _("BOITE DE RECEPTION"),
