@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.utils.timezone import now
 
 from user.models.custom_user import CustomUser
 from user.models.document_type import DocumentType
@@ -128,8 +129,9 @@ class documentModelTestCase(TestCase):
         self.test_document_type = DocumentType.objects.create(
             label="test_doc_type"
         )
+        self.date_now = now()
         self.test_document = Document.objects.create(
-            created_at="1900-01-01",
+            created_at=self.date_now,
             path="static/path/to/document",
             user=self.test_user,
             document_type=self.test_document_type
@@ -143,7 +145,7 @@ class documentModelTestCase(TestCase):
         self.assertEqual(str(self.test_document), self.test_document.document_type.label)
 
         # Test created document datas
-        self.assertEqual(self.test_document.created_at, "1900-01-01")
+        self.assertEqual(self.test_document.created_at, self.date_now)
         self.assertEqual(self.test_document.path, "static/path/to/document")
         self.assertEqual(self.test_document.user.pk, self.test_user.pk)
         self.assertEqual(self.test_document.document_type.pk, self.test_document_type.pk)

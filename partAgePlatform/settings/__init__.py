@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'partAgePlatform',
     'user',
     'messaging',
 ]
@@ -141,13 +142,18 @@ STATIC_URL = '/static/'
 
 # Database référence datas
 USER_TYPES = (
-    "Junior",
-    "Senior",
+    "junior",
+    "senior",
 )
 
 DOCUMENT_TYPES = (
     "identity",
     "criminal_record",
+)
+
+MESSAGE_STATUS = (
+    "sended",
+    "modified"
 )
 
 # User files upload

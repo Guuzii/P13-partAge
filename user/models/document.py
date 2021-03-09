@@ -1,12 +1,12 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.utils import timezone
+from django.utils.timezone import now
 
 
 class Document(models.Model):
-    created_at = models.DateField(
+    created_at = models.DateTimeField(
         verbose_name=_('Document creation date'),
-        default=timezone.now
+        default=now
     )
     path = models.CharField(
         verbose_name=_('Path to file'),
