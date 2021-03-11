@@ -181,8 +181,8 @@ class UserLoginTestCase(TestCase):
         self.assertEqual(self.test_user_active.pk, int(self.client.session.get("_auth_user_id"))) 
 
         # Test status_code/redirection and template used
-        self.assertRedirects(response=response, expected_url=reverse('home'))
-        self.assertTemplateUsed(template_name="platform/home.html")
+        self.assertRedirects(response=response, expected_url=reverse('user-profile'))
+        self.assertTemplateUsed(template_name="user/profile.html")
 
     def test_user_login_post_invalid_credentials(self):
         post_args = {
@@ -355,7 +355,7 @@ class UserForgotPwdTestCase(TestCase):
         self.test_pwd_forgot_form = CustomUserPwdForgotForm()
 
     def test_user_pwd_forgot_get(self):
-        response = self.client.get(reverse('pwd-forgot'))        
+        response = self.client.get(reverse('pwd-forgot')) 
         
         # Test form used is the right one
         self.assertEqual(

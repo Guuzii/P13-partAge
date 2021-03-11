@@ -11,12 +11,31 @@ ul.messages {
 /******************************/
 /*      MESSAGING STYLES      */
 /******************************/
-#conversation-list, #conversation-messages-list {
-    height: 400px;
+#conversation-list, #messages-list {
+    height: 450px;
     overflow-y: scroll;
+    overflow-x: hidden;
     scrollbar-width: thin;
 }
 
-#conversation-list:hover body, #conversation-messages-list:hover body {
+#conversation-list:hover body, #messages-list:hover body {
     overflow: hidden;
+}
+
+.message-box {
+    max-width: 50%;
+    border: 1px solid #000;
+    border-radius: 5px;
+}
+
+@media (max-width: 719px) { 
+    .message-box {
+        max-width: 75%;
+    }
+}
+
+@media (max-width: 575px) { 
+    .message-box {
+        max-width: 90%;
+    }
 }

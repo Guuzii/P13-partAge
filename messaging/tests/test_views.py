@@ -11,6 +11,8 @@ from django.conf import settings
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 
+from messaging.forms import UserMessageForm
+
 from messaging.models.message import UserMessage
 from messaging.models.message_status import UserMessageStatus
 
@@ -86,7 +88,7 @@ class MessagingInboxTestCase(TestCase):
         response = self.client.get(reverse('message-inbox'))
 
         # Test status_code/redirection and template used
-        self.assertRedirects(response=response, expected_url=reverse('login'))
+        self.assertRedirects(response=response, expected_url='/user/login/?next=%2Fmessage%2F')
         self.assertTemplateUsed(template_name="user/login.html")
 
 
@@ -128,6 +130,7 @@ class MessagingConversationTestCase(TestCase):
         )
         self.test_message_1.save()
         self.test_response_message_1.save()
+        self.test_message_form = UserMessageForm()
 
     def test_message_conversation_get(self):
         self.client.login(username="test@test.fr", password="test123+")
@@ -142,11 +145,16 @@ class MessagingConversationTestCase(TestCase):
         for message in response.context['conversation_messages']:
             self.assertIn(message.pk, (self.test_message_1.pk, self.test_response_message_1.pk))
 
-        # Test related user in context
-        self.assertIsNotNone(response.context['related_user'])
-        self.assertEqual(response.context['related_user'], self.test_user_2)
+        # Test context content
+        self.assertEqual(response.context['uid'], urlsafe_base64_encode(force_bytes(self.test_user_2.pk)))
+        self.assertEqual(response.context['related_user'], self.test_user_2)       
+        
+        # Test form used is the right one
+        self.assertEqual(
+            response.context["form"].fields.keys(), self.test_message_form.fields.keys()
+        )
 
-    def test_message_conversation_error(self):
+    def test_message_conversation_get_error(self):
         self.client.login(username="test@test.fr", password="test123+")
         response = self.client.get(reverse('message-conv', args=[urlsafe_base64_encode(force_bytes(-1))]))
 

@@ -12,8 +12,8 @@
 
     <br/>
 
-    <div class="row pt-2 pb-2 border rounded">        
-        <div id="conversation-list" class="w-100 list-group align-items-center {% if not related_users %}justify-content-center{% endif %}">
+    <div class="container">        
+        <div id="conversation-list" class="w-100 list-group align-items-center pt-2 pb-2 border rounded {% if not related_users %}justify-content-center{% endif %}">
             {% if related_users %}
                 {% for obj in related_users %}
                     <div class="row justify-content-between mb-2 w-75 list-group-item-action border-bottom">
@@ -21,7 +21,7 @@
                             Conversation avec {{ obj.user.first_name }} {{ obj.user.last_name }}
                         </div>
 
-                        <a class="col-md-2 btn btn-danger btn-outline mx-1" href="{% url 'message-conv' uidb64=obj.uid %}">
+                        <a class="col-md-2 btn btn-primary btn-outline mx-1" href="{% url 'message-conv' uidb64=obj.uid %}">
                             ouvrir
                         </a>
                     </div>

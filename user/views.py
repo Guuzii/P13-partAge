@@ -79,6 +79,15 @@ def custom_send_email(request, user, subject, template, pwd=False):
         )
         return False
 
+def get_user_by_uid(uidb64):    
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+
+    return user
+
 
 class UserProfile(View):
     template_name = 'user/profile.html'
@@ -172,11 +181,7 @@ class UserVerifyEmail(View):
     }
 
     def get(self, request, uidb64, token):
-        try:
-            uid = force_text(urlsafe_base64_decode(uidb64))
-            user = CustomUser.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
-            user = None
+        user = get_user_by_uid(uidb64)
 
         if user is not None and account_activation_token.check_token(user, token):
             user.email_validated = True
@@ -201,22 +206,26 @@ class UserForgotPwd(View):
     def get(self, request):
         if (request.user.is_authenticated):
             user = CustomUser.objects.get(pk=request.user.pk)
-            logout(request)
+            user.is_active = False
+            user.reset_password = True                
+            user.save()
 
             email_sended = custom_send_email(request, user, self.email_subject, self.email_template,pwd=True)
 
-            if email_sended:
-                user.is_active = False
-                user.reset_password = True
-                
+            if email_sended:                
                 messages.success(
                     request, 
                     message=_("Un email vous a été envoyé. Merci de cliquer sur le lien contenu dans celui-ci afin de modifier votre mot de passe."),
                     extra_tags="alert-success"
                 )
-                
-                user.save()
-
+            else:
+                 messages.error(
+                    request, 
+                    message=_("Erreur lors de l'envoi de l'email. Merci de refaire une demande de changement de mot de passe."),
+                    extra_tags="alert-danger"
+                )
+            
+            logout(request)
             return redirect('home')
         else:
             self.context['form'] = CustomUserPwdForgotForm()
@@ -264,11 +273,7 @@ class UserResetPwd(View):
     }
 
     def get(self, request, uidb64, token):
-        try:
-            uid = force_text(urlsafe_base64_decode(uidb64))
-            user = CustomUser.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
-            user = None
+        user = get_user_by_uid(uidb64)
 
         if user is not None and password_reset_token.check_token(user, token):
             self.context['form'] = CustomUserPwdResetForm(user)
@@ -280,11 +285,7 @@ class UserResetPwd(View):
             return render(request, self.template_name, self.context)
 
     def post(self, request, uidb64, token):
-        try:
-            uid = force_text(urlsafe_base64_decode(uidb64))
-            user = CustomUser.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
-            user = None
+        user = get_user_by_uid(uidb64)
 
         if user is not None and password_reset_token.check_token(user, token):
             form = CustomUserPwdResetForm(user, data=request.POST)

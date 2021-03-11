@@ -12,14 +12,29 @@
 
     <br/>
 
-    <div class="row">
-        <div id="conversation-messages-list" class="list-group w-100">
+    <div class="container">
+        <div id="messages-list" class="list-group border rounded pt-2 pb-2">
             {% for message in conversation_messages %}
-                <div class="list-group-item w-75 {% if message.sender_user == related_user %}align-self-start{% else %}align-self-end{% endif %}">
-                    {{ message }}
+                <div class="message-box container mb-2 {% if message.sender_user == related_user %}align-self-start ml-2{% else %}align-self-end mr-2{% endif %}">
+                    <div class="row mt-2 mb-2">
+                        <div class="col-md-12 {% if message.sender_user == request.user %}text-right{% endif %}">
+                            {{ message }}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12 {% if message.sender_user == request.user %}text-left{% else %}text-right{% endif %}">
+                            <small class="text-muted">
+                                Envoyé le {{ message.created_at }} par 
+                                <span class="font-weight-bold">{{ message.sender_user.first_name }} {{ message.sender_user.last_name }}</span>
+                            </small>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
+            <div id="last-message-ref"></div>
         </div>
+
+        {% include 'messaging/includes/form.html' %}
     </div>
 
 {% endblock section_content %}
