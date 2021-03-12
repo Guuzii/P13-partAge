@@ -28,6 +28,13 @@ ul.messages {
     border-radius: 5px;
 }
 
+.message-received {
+    line-height: 1;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+}
+
 @media (max-width: 719px) { 
     .message-box {
         max-width: 75%;

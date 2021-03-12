@@ -8,17 +8,18 @@
             {% endautoescape %}
         {% endfor %}
     </div>
-{% endif %}
-
-{% if not errors and form.errors %}
+{% elif not errors and form.errors %}
     <div style="color: red;">
         {% autoescape off %}
             {{ form.errors }}
         {% endautoescape %}
     </div>
+{% else %}    
+    <div class="form-errors" style="color: red;">
+    </div>
 {% endif %}
 
-<form action="{% url form_action uidb64=uid %}" method="POST">
+<form id="{{ form_id }}" action="{% url form_action uidb64=uid %}" method="POST">
     {% csrf_token %}
 
     {% for field in form %}

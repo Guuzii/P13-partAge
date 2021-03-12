@@ -1,7 +1,8 @@
+from django.core import serializers
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.template.loader import render_to_string
 from django.views import View
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
@@ -71,6 +72,7 @@ class MessageConversation(View):
     template_name = 'messaging/conversation.html'
     context = {
         'title': _("CONVERSATION"),
+        'form_id': "send-message-form",
         'form_action': 'message-conv',
         'submit_button_label': _("Envoyer"),
     }
@@ -79,7 +81,32 @@ class MessageConversation(View):
         self.context['errors'] = None
         related_user = get_user_by_uid(uidb64)
 
-        if related_user is not None:            
+        if related_user is not None:
+            if(request.GET.get('infos')):
+                created_status = UserMessageStatus.objects.get(label="created")
+                return JsonResponse({
+                    'status_created_id': created_status.pk,
+                    'user': {
+                        'id': request.user.pk,
+                        'fullname': request.user.first_name + " " + request.user.last_name
+                    },
+                    'related_user': {
+                        'id': related_user.pk,
+                        'fullname': related_user.first_name + " " + related_user.last_name
+                    }
+                })
+
+            conversation_messages_unviewed = UserMessage.objects.filter(
+               Q(Q(sender_user=related_user) & Q(receiver_user=request.user)) & Q(is_viewed=False)
+            )
+            for message in conversation_messages_unviewed:
+                message.is_viewed = True
+                message.save()
+
+            if(request.GET.get('refresh')):
+                conversation_messages_json = serializers.serialize('json', get_conversation_messages(request.user, related_user))
+                return HttpResponse(conversation_messages_json, content_type='application/json')
+
             self.context['form'] = UserMessageForm()
             self.context['uid'] = uidb64
             self.context['related_user'] = related_user
@@ -105,28 +132,25 @@ class MessageConversation(View):
             form = UserMessageForm(request.POST)
 
             if (form.is_valid()):
-                sended_status = UserMessageStatus.objects.get(label="sended")
+                created_status = UserMessageStatus.objects.get(label="created")
 
                 new_message = UserMessage(
                     sender_user=request.user,
                     receiver_user=related_user,
-                    status=sended_status,
+                    status=created_status,
                     is_support=related_user.is_superuser,
                     content=form.cleaned_data.get('message_content')
                 )
                 new_message.save()
 
-                return redirect('message-conv', uidb64=uidb64)
+                new_message_json = serializers.serialize('json', (new_message,))
+                return HttpResponse(new_message_json, content_type='application/json')
             else:
-                self.context['conversation_messages'] = get_conversation_messages(request.user, related_user)
-                self.context['form'] = form
-                self.context['errors'] = form.errors.items()
-
-                return render(request, self.template_name, self.context)
+                return JsonResponse(data=form.errors.get_json_data(), safe=False, status=500)
         else:                
             messages.error(
                 request, 
                 message=_("Destinataire du message inconnu"),
                 extra_tags="alert-danger"
             )
-            return redirect('message-conv', uidb64=uidb64)
+            return redirect('message-inbox')

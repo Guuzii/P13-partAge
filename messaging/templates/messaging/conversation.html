@@ -15,26 +15,38 @@
     <div class="container">
         <div id="messages-list" class="list-group border rounded pt-2 pb-2">
             {% for message in conversation_messages %}
-                <div class="message-box container mb-2 {% if message.sender_user == related_user %}align-self-start ml-2{% else %}align-self-end mr-2{% endif %}">
+                <div class="message-box container position-relative mb-2 {% if message.sender_user == related_user %}align-self-start ml-2{% else %}align-self-end mr-2{% endif %}">
                     <div class="row mt-2 mb-2">
                         <div class="col-md-12 {% if message.sender_user == request.user %}text-right{% endif %}">
                             {{ message }}
                         </div>
                     </div>
+
                     <div class="row mt-2">
-                        <div class="col-md-12 {% if message.sender_user == request.user %}text-left{% else %}text-right{% endif %}">
+                        <div class="col-md-12 {% if message.sender_user == related_user %}text-right{% endif %}">
                             <small class="text-muted">
-                                Envoyé le {{ message.created_at }} par 
-                                <span class="font-weight-bold">{{ message.sender_user.first_name }} {{ message.sender_user.last_name }}</span>
+                                {% if message.status.label == 'created' %}Envoyé{% else %}Modifié{% endif %} le {{ message.created_at|date:'d-m-Y H:i:s' }} par <span class="font-weight-bold">{{ message.sender_user.first_name }} {{ message.sender_user.last_name }}</span>
                             </small>
                         </div>
                     </div>
+
+                    {% if message.sender_user == request.user and message.is_viewed %} 
+                        <span class="message-received"><i class="fas fa-check-circle text-primary"></i></span>
+                    {% elif message.sender_user == request.user %}
+                        <span class="message-received"><i class="far fa-check-circle"></i></span>
+                    {% endif %}
                 </div>
             {% endfor %}
+
             <div id="last-message-ref"></div>
         </div>
 
         {% include 'messaging/includes/form.html' %}
     </div>
+
+    
+    {% load static %}
+    <!-- Messaging conversation javascript -->
+    <script type="text/javascript" src="{% static 'platform/js/messaging-conversation.js' %}"></script>
 
 {% endblock section_content %}

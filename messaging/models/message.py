@@ -8,6 +8,7 @@ class UserMessage(models.Model):
     receiver_user = models.ForeignKey('user.CustomUser', on_delete=models.CASCADE, related_name='receiver_user')
     status = models.ForeignKey('messaging.UserMessageStatus', on_delete=models.PROTECT)
     is_support = models.BooleanField(default=False)
+    is_viewed = models.BooleanField(default=False)
     created_at = models.DateTimeField(
         verbose_name=_('Message creation date'),
         default=now
