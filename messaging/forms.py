@@ -1,7 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
 
 class UserMessageForm(forms.Form):
     message_content = forms.CharField(
@@ -12,8 +11,14 @@ class UserMessageForm(forms.Form):
                 'placeholder': _("Message"),
             }
         ),
-        required=True,
-        error_messages={
-            'required': "Vous ne pouvez pas envoyer un message vide",
-        }
+        required=False
     )
+
+    def clean_message_content(self):
+        content = self.cleaned_data.get('message_content')
+        if (content == "" or content.strip() == ""):            
+            raise ValidationError(
+                message=_("Vous ne pouvez pas envoyer un message vide"),
+                code="required"
+            )
+        return content

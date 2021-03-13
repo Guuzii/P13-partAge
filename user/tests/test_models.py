@@ -8,7 +8,7 @@ from user.models.user_type import UserType
 from user.models.wallet import Wallet
 
 
-class walletModelTestCase(TestCase):
+class WalletModelTestCase(TestCase):
     def setUp(self):
         self.new_test_wallet = Wallet.objects.create()
 
@@ -23,7 +23,7 @@ class walletModelTestCase(TestCase):
         self.assertEqual(self.new_test_wallet.balance, 0)
 
 
-class userTypeModelTestCase(TestCase):
+class UserTypeModelTestCase(TestCase):
     def setUp(self):
         self.new_test_user_type = UserType.objects.create(
             label="test_user_type"
@@ -99,7 +99,7 @@ class CustomUserModelTestCase(TestCase):
         self.assertTrue(self.new_test_admin_user.email_validated)
 
 
-class documentTypeModelTestCase(TestCase):
+class DocumentTypeModelTestCase(TestCase):
     def setUp(self):
         self.new_test_document_type = DocumentType.objects.create(
             label="test_doc_type"
@@ -116,7 +116,7 @@ class documentTypeModelTestCase(TestCase):
         self.assertEqual(self.new_test_document_type.label, "test_doc_type")
 
 
-class documentModelTestCase(TestCase):
+class DocumentModelTestCase(TestCase):
     def setUp(self):
         self.test_user = CustomUser.objects.create_user(
             first_name="testeur",

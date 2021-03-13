@@ -1,16 +1,9 @@
 import json
 
-from os.path import isfile as os_isfile
-from os import remove as os_removefile
-
 from django.core import serializers
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import authenticate, login, logout
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core import mail
 from django.contrib.messages import get_messages
-from django.conf import settings
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 
