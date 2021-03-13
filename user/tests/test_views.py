@@ -481,7 +481,7 @@ class UserForgotPwdTestCase(TestCase):
         self.assertTemplateUsed(template_name="user/password_forgot.html")
 
 
-class UserForgotResetTestCase(TestCase):
+class UserForgotResetPwdTestCase(TestCase):
     def setUp(self):
         self.test_user = CustomUser.objects.create_user(
             first_name="testeur",

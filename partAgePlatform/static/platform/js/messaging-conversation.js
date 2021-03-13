@@ -147,6 +147,7 @@ $(document).ready(() => {
                 r.message_content.forEach(error => {                        
                     $('.form-errors').append('<span class="error">'+ error.message + '</span>')
                 });
+                $('#id_message_content').val('');
             }
         });
     });
