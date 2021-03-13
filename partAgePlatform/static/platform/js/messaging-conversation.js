@@ -63,6 +63,7 @@ const createAndAppendMessageHtml = (message, user, relatedUser, statusCreatedId)
 }
 
 const scrollToLastMessage = (animate=true) => {
+    console.log('SCROLL');
     let lastMessageRef = $('#last-message-ref');
     if (lastMessageRef.length){
         if (animate) {
@@ -82,6 +83,7 @@ $(document).ready(() => {
     let user;
     let relatedUser;
     let statusCreatedId;
+    let lastKeyPress;
 
     scrollToLastMessage(false);
 
@@ -122,7 +124,15 @@ $(document).ready(() => {
                 }
             }
         });
-    }, 10000); // in milliseconds
+    }, 5000); // in milliseconds
+
+    $('#id_message_content').keydown((e) => {
+        if (lastKeyPress !== 'Shift' && e.key === 'Enter') {
+            e.preventDefault();
+            $('#send-message-form').submit();
+        }
+        lastKeyPress = e.key;
+    })
 
     // Handle sending message
     $('#send-message-form').submit((e) => {
@@ -151,6 +161,15 @@ $(document).ready(() => {
             }
         });
     });
+    
+    // Allow form submit with enter key when in textarea
+    $('#id_message_content').keydown((e) => {
+        if (lastKeyPress !== 'Shift' && e.key === 'Enter') {
+            e.preventDefault();
+            $('#send-message-form').submit();
+        }
+        lastKeyPress = e.key;
+    })
 
 })
 
