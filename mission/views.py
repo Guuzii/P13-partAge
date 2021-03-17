@@ -10,9 +10,9 @@ from django.db.models import Q
 
 
 class MissionBoard(View):
-    template_name = 'messaging/inbox.html'
+    template_name = 'mission/board.html'
     context = {
-        'title': _("MISSIONS DISPONIBLE"),
+        'title': _("TABLEAU DES MISSIONS"),
     }
 
     def get(self, request):        
