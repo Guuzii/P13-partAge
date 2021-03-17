@@ -9,6 +9,14 @@ ul.messages {
 
 
 /******************************/
+/*      USER STYLES      */
+/******************************/
+.btn-profile-dc, .btn-profile-pwd {
+    width: 60%;
+}
+
+
+/******************************/
 /*      MESSAGING STYLES      */
 /******************************/
 #conversation-list, #messages-list {
@@ -40,13 +48,36 @@ ul.messages {
     right: 2px;
 }
 
-@media (max-width: 719px) { 
+@media (max-width: 991px) {
+    /***** USER *****/
+    .btn-profile-dc, .btn-profile-pwd {
+        width: 80%;
+    }
+}
+
+@media (max-width: 719px) {
+    /***** USER *****/
+    .profile-label {
+        text-align: left !important;
+    }
+
+    .profile-value {
+        text-align: right !important;
+    }
+
+    /***** MESSAGING *****/
     .message-box {
         max-width: 75%;
     }
 }
 
-@media (max-width: 575px) { 
+@media (max-width: 575px) {
+    /***** USER *****/
+    .btn-profile-dc, .btn-profile-pwd {
+        width: 100%;
+    }
+
+    /***** MESSAGING *****/
     .message-box {
         max-width: 90%;
     }

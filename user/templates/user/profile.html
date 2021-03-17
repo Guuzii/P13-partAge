@@ -14,37 +14,40 @@
 
     <div class="container">
         <div class="row mb-2">
-            <div class="col-md-6 text-right">Identifiant/email :</div>
-            <div class="col-md-6">{{ request.user.email}}</div>
+            <div class="profile-label col-md-6 text-right">Identifiant/email :</div>
+            <div class="profile-value col-md-6">{{ request.user.email}}</div>
         </div>
         <div class="row mb-2">
-            <div class="col-md-6 text-right">Prénom :</div>
-            <div class="col-md-6">{{ request.user.first_name }}</div>
+            <div class="profile-label col-md-6 text-right">Prénom :</div>
+            <div class="profile-value col-md-6">{{ request.user.first_name }}</div>
         </div>
         <div class="row mb-2">
-            <div class="col-md-6 text-right">Nom :</div>
-            <div class="col-md-6">{{ request.user.last_name}}</div>
+            <div class="profile-label col-md-6 text-right">Nom :</div>
+            <div class="profile-value col-md-6">{{ request.user.last_name}}</div>
         </div>
         <div class="row mb-2">
-            <div class="col-md-6 text-right">Date de naissance :</div>
-            <div class="col-md-6">{{ request.user.birthdate }}</div>
+            <div class="profile-label col-md-6 text-right">Date de naissance :</div>
+            <div class="profile-value col-md-6">{{ request.user.birthdate }}</div>
         </div>
         <div class="row mb-2">
-            <div class="col-md-6 text-right">Expérience :</div>
-            <div class="col-md-6">{{ request.user.experience_point }} pts</div>
+            <div class="profile-label col-md-6 text-right">Expérience :</div>
+            <div class="profile-value col-md-6">{{ request.user.experience_point }} pts</div>
         </div>
         <div class="row mb-2">
-            <div class="col-md-6 text-right">Porte-monnaie :</div>
-            <div class="col-md-6">{{ wallet_balance }} po</div>
+            <div class="profile-label col-md-6 text-right">Porte-monnaie :</div>
+            <div class="profile-value col-md-6">{{ wallet_balance }} po</div>
         </div>
-        <div class="row mt-5 justify-content-center">
-            <a class="btn btn-danger btn-outline mx-1 my-2 w-25" href="{% url 'logout' %}">
-                Se deconnecter
-            </a>    
-            <a class="btn btn-primary btn-outline mx-1 my-2 w-25" href="{% url 'pwd-forgot' %}">
-                Modifier mon mot de passe
-            </a>
-
+        <div class="row mt-5 justify-content-center align-items-center">
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <a class="btn-profile-dc btn btn-danger btn-outline mx-1 my-2" href="{% url 'logout' %}">
+                    Se deconnecter
+                </a>
+            </div>
+            <div class="col-md-6 d-flex justify-content-center align-items-center">   
+                <a class="btn-profile-pwd btn btn-primary btn-outline mx-1 my-2" href="{% url 'pwd-forgot' %}">
+                    Modifier mon mot de passe
+                </a>
+            </div>
         </div>
     </div>
 
