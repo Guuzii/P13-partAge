@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'partAgePlatform',
     'user',
     'messaging',
+    'mission',
 ]
 
 AUTH_USER_MODEL = 'user.CustomUser'
