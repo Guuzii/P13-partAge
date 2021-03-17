@@ -55,9 +55,17 @@ class MessageInbox(View):
         related_users_with_uid = []
 
         for user in related_users:
+            unreads = False
+            unread_messages = UserMessage.objects.filter(
+                Q(Q(sender_user=user) & Q(receiver_user=request.user)) & Q(is_viewed=False)
+            )
+            if (len(unread_messages) > 0):
+                unreads = True
+
             related_users_with_uid.append({
                 'user': user,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk))
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'unreads': unreads
             })
         
         self.context['related_users'] = related_users_with_uid

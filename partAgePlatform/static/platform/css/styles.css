@@ -22,10 +22,15 @@ ul.messages {
     overflow: hidden;
 }
 
+.unread-message-icon {
+    position: absolute;
+    right: 0;
+}
+
 .message-box {
     max-width: 50%;
-    border: 1px solid #000;
     border-radius: 5px;
+    background-color: #d8dce1;
 }
 
 .message-received {

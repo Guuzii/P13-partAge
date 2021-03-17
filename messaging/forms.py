@@ -9,8 +9,10 @@ class UserMessageForm(forms.Form):
             attrs={
                 'class': "form-control", 
                 'placeholder': _("Message"),
+                'rows': "3",
             }
         ),
+        help_text=_("Vous pouvez envoyer votre message en appuyant sur SHIFT + ENTER"),
         required=False
     )
 

@@ -9,7 +9,7 @@ const diffMessagesArrayOnPk = (baseArray, updatedArray) => {
 const createAndAppendMessageHtml = (message, user, relatedUser, statusCreatedId) => {
     // Create message container
     let messageBoxClass = "message-box container position-relative mb-2";
-    messageBoxClass += message.fields.sender_user === user.id ? " align-self-end mr-2" : " align-self-start ml-2";
+    messageBoxClass += message.fields.sender_user === user.id ? " align-self-end mr-2 bg-secondary" : " align-self-start ml-2";
     let divMessageContainer = $('<div></div>');
     divMessageContainer.addClass(messageBoxClass);
     
@@ -17,7 +17,7 @@ const createAndAppendMessageHtml = (message, user, relatedUser, statusCreatedId)
     let divMessageContentRow = $('<div></div>');
     divMessageContentRow.addClass("row mt-2 mb-2");
     let divMessageContentCol = $('<div></div>');
-    divMessageContentCol.addClass(message.fields.sender_user === user.id ? "col-md-12 text-right" : "col-md-12");
+    divMessageContentCol.addClass(message.fields.sender_user === user.id ? "col-md-12 text-right text-white" : "col-md-12");
     divMessageContentCol.text(message.fields.content);
 
     // Create message infos
@@ -52,7 +52,7 @@ const createAndAppendMessageHtml = (message, user, relatedUser, statusCreatedId)
             spanMessageCheck.append('<i class="fas fa-check-circle text-primary">');
         }
         else {
-            spanMessageCheck.append('<i class="far fa-check-circle"></i>');
+            spanMessageCheck.append('<i class="far fa-check-circle text-white"></i>');
         }
         divMessageContainer.append(spanMessageCheck);
     }
@@ -63,7 +63,7 @@ const createAndAppendMessageHtml = (message, user, relatedUser, statusCreatedId)
 }
 
 const scrollToLastMessage = (animate=true) => {
-    console.log('SCROLL');
+    // console.log('SCROLL');
     let lastMessageRef = $('#last-message-ref');
     if (lastMessageRef.length){
         if (animate) {
@@ -126,14 +126,6 @@ $(document).ready(() => {
         });
     }, 5000); // in milliseconds
 
-    $('#id_message_content').keydown((e) => {
-        if (lastKeyPress !== 'Shift' && e.key === 'Enter') {
-            e.preventDefault();
-            $('#send-message-form').submit();
-        }
-        lastKeyPress = e.key;
-    })
-
     // Handle sending message
     $('#send-message-form').submit((e) => {
         e.preventDefault();
@@ -164,7 +156,7 @@ $(document).ready(() => {
     
     // Allow form submit with enter key when in textarea
     $('#id_message_content').keydown((e) => {
-        if (lastKeyPress !== 'Shift' && e.key === 'Enter') {
+        if (lastKeyPress === 'Shift' && e.key === 'Enter') {
             e.preventDefault();
             $('#send-message-form').submit();
         }
