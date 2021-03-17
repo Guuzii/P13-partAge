@@ -96,11 +96,8 @@ class UserProfile(View):
     }
 
     def get(self, request):
-        if (request.user.is_authenticated):
-            self.context['wallet_balance'] = 0 if request.user.wallet is None else request.user.wallet.balance
-            return render(request, self.template_name, self.context)
-        else:
-            return redirect('login')
+        self.context['wallet_balance'] = 0 if request.user.wallet is None else request.user.wallet.balance
+        return render(request, self.template_name, self.context)
 
 
 class UserRegister(View):
