@@ -12,6 +12,7 @@ class UserMessageForm(forms.Form):
                 'rows': "3",
             }
         ),
+        max_length=510,
         help_text=_("Vous pouvez envoyer votre message en appuyant sur SHIFT + ENTER"),
         required=False
     )

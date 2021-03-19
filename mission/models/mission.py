@@ -21,9 +21,8 @@ class Mission(models.Model):
         verbose_name=_('Mission title'),
         max_length=50
     )
-    description = models.CharField(
-        verbose_name=_('Mission description'),
-        max_length=255
+    description = models.TextField(
+        verbose_name=_('Mission description')
     )
 
     class Meta:

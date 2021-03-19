@@ -13,9 +13,8 @@ class UserMessage(models.Model):
         verbose_name=_('Message creation date'),
         default=now
     )
-    content = models.CharField(
-        verbose_name=_('Message content'),
-        max_length=255,
+    content = models.TextField(
+        verbose_name=_('Message content')
     )
 
     class Meta:
