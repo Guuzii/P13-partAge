@@ -5,6 +5,7 @@ from django.core.management import call_command
 
 from user.management.commands.update_refs_user import Command as UserRefCommand
 from messaging.management.commands.update_refs_messaging import Command as MessagingRefCommand
+from mission.management.commands.update_refs_mission import Command as MissionRefCommand
 
 class Command(BaseCommand):
     help = "Call specific update_refs commands depending on params"
@@ -25,6 +26,7 @@ class Command(BaseCommand):
             commands = (
                 UserRefCommand(), 
                 MessagingRefCommand(),
+                MissionRefCommand(),
             )
             
             for command in commands:
@@ -36,6 +38,9 @@ class Command(BaseCommand):
                     command.handle()
                 elif(app_name == 'messaging'):
                     command = MessagingRefCommand()
+                    command.handle()
+                elif(app_name == 'mission'):
+                    command = MissionRefCommand()
                     command.handle()
                 else:
                     raise CommandError("No command associated to '{}' app".format(app_name))

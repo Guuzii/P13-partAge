@@ -158,6 +158,28 @@ MESSAGE_STATUS = (
     "modified",
 )
 
+MISSION_STATUS = (
+    "open",
+    "close",
+    "ongoing",
+    "finish",
+)
+
+MISSION_CATEGORY = [
+    {
+        'label': "easy",
+        'default_reward': 100,
+    },
+    {
+        'label': "medium",
+        'default_reward': 200,
+    },
+    {
+        'label': "hard",
+        'default_reward': 400,
+    },
+]
+
 # User files upload
 USER_APP_BASEDIR = Path(__file__).resolve().parent.parent.parent / 'user/'
 USER_STATIC_UPLOAD_DIR = 'static/user/uploads/'
