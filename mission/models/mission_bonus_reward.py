@@ -8,8 +8,7 @@ class MissionBonusReward(models.Model):
     )
     description = models.CharField(
         verbose_name=_('Mission bonus reward description'),
-        max_length=255,
-        blank=True
+        max_length=255
     )
 
     class Meta:
