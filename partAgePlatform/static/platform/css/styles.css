@@ -52,18 +52,22 @@ ul.messages {
 /******************************/
 /*      MISSION STYLES        */
 /******************************/
-.missions-list {
+.missions-list, .mission-applicants-list {
     height: 450px;
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-width: thin;
 }
 
-.missions-list:hover body {
+.mission-applicants-list {
+    height: 250px;
+}
+
+.missions-list:hover body, .mission-applicants-list:hover body {
     overflow: hidden;
 }
 
-.mission-details-container {
+.mission-details-container, .mission-applicants-container {
     width: 75%;
 }
 

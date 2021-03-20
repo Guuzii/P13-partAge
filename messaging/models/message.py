@@ -6,6 +6,7 @@ from django.utils.timezone import now
 class UserMessage(models.Model):
     sender_user = models.ForeignKey('user.CustomUser', on_delete=models.CASCADE, related_name='sender_user')
     receiver_user = models.ForeignKey('user.CustomUser', on_delete=models.CASCADE, related_name='receiver_user')
+    mission = models.ForeignKey('mission.Mission', on_delete=models.CASCADE, null=True)
     status = models.ForeignKey('messaging.UserMessageStatus', on_delete=models.PROTECT)
     is_support = models.BooleanField(default=False)
     is_viewed = models.BooleanField(default=False)

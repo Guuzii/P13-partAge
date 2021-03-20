@@ -15,6 +15,9 @@ from mission.models.mission_category import MissionCategory
 from mission.models.mission import Mission
 from mission.models.mission_bonus_reward import MissionBonusReward
 
+from messaging.forms import UserMessageForm
+
+from messaging.models.message import UserMessage
 from user.models.user_type import UserType
 
 
@@ -76,14 +79,41 @@ class MissionDetails(View):
     def get(self, request, uidb64):
         mission = get_mission_by_uid(uidb64)
         if mission is not None:
+            if(request.GET.get('infos')):
+                return JsonResponse(mission.pk, safe=False)
+                
             self.context['mission'] = mission
 
             if (request.user.user_type == self.senior_type):
                 # SENIOR
+                receiver_user_messages_distinct = UserMessage.objects.filter(Q(receiver_user=request.user) & Q(mission=mission)).order_by('sender_user').distinct('sender_user')
+                applicants = []
+
+                for message in receiver_user_messages_distinct:
+                    applicants.append(message.sender_user)
+
+                applicants_with_uid = []
+
+                for applicant in applicants:
+                    applicants_with_uid.append({
+                        'user': applicant,
+                        'uid': urlsafe_base64_encode(force_bytes(applicant.pk)),
+                    })
+                
+                self.context['senior'] = True
+                self.context['applicants'] = applicants_with_uid
                 
                 return render(request, self.template_name, self.context)
             elif (request.user.user_type == self.junior_type):
                 # JUNIOR
+                self.context['senior'] = False
+                self.context['form'] = UserMessageForm()
+                self.context['form_id'] = "send-message-form"
+                self.context['form_action'] = "message-conv"
+                self.context['submit_button_label'] = _("Postuler")
+                self.context['back_url_name'] = "mission-board"
+                self.context['uid'] = uidb64
+                
                 return render(request, self.template_name, self.context)
             else:
                 messages.error(
@@ -156,7 +186,7 @@ class MissionCreate(View):
                 if (created):
                     messages.success(
                         request, 
-                        message=_("Mission créée avec succés"),
+                        message=_("Mission créée avec succés. Elle sera disponible pour les utilisateurs unefois validée par un Administrateur"),
                         extra_tags="alert-success"
                     )
                 else:

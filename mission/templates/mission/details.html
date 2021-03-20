@@ -55,6 +55,62 @@
         </div>
     </div>
 
+    <br />
     
+    <div class="divider-custom">
+        <div class="divider-custom-line"></div>
+    </div>
+
+    {% if senior %}
+        <div class="row">
+            <div class="col-md-12 text-center mb-2">
+                <h3>Postulants</h3>
+            </div>
+        </div>
+
+        <br/>
+
+        <div class="container">
+            <div class="mission-applicants-list w-100 list-group align-items-center py-3 border rounded {% if not applicants %}justify-content-center{% endif %}">
+                {% if applicants %}
+                    {% for obj in applicants %}
+                        <div class="row justify-content-between mb-2 w-75 list-group-item-action border-bottom">
+                            <div class="col-md-6 d-flex align-items-center">
+                                {{ obj.user.first_name }} {{ obj.user.last_name }}
+                            </div>
+
+                            <a class="col-md-2 btn btn-secondary btn-outline mx-1" href="{% url 'message-conv' uidb64=obj.uid %}">
+                                conversation
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Aucun postulants</p>
+                {% endif %}
+            </div>
+
+            <div class="row mt-2">
+                <a class="col-md-2 btn btn-danger btn-outline mx-1" href="{% url 'mission-board' %}">
+                    Retour
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-md-12 text-center mb-2">
+                <h3>Postuler</h3>
+            </div>
+        </div>
+
+        <br/>
+
+        <div class="container">
+            {% include 'messaging/includes/form.html' %}
+        </div>
+    {% endif %}
+
+    {% load static %}
+    <!-- Mission send-message javascript -->
+    <script type="text/javascript" src="{% static 'platform/js/mission-applicant.js' %}"></script>
 
 {% endblock section_content %}
