@@ -12,6 +12,7 @@ class MissionBonusReward(models.Model):
     )
 
     class Meta:
+        db_table  = 'mission_bonus_reward'
         verbose_name = _('Mission bonus reward')
         verbose_name_plural = _('Mission bonus rewards')
 

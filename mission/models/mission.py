@@ -24,6 +24,14 @@ class Mission(models.Model):
     description = models.TextField(
         verbose_name=_('Mission description')
     )
+    bearer_validate = models.BooleanField(
+        verbose_name=_('Bearer user validate mission finish'),
+        default=False
+    )
+    acceptor_validate = models.BooleanField(
+        verbose_name=_('Acceptor user validate mission finish'),
+        default=False
+    )
 
     class Meta:
         verbose_name = _('Mission')

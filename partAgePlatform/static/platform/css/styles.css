@@ -48,6 +48,29 @@ ul.messages {
     right: 2px;
 }
 
+
+/******************************/
+/*      MISSION STYLES        */
+/******************************/
+.missions-list {
+    height: 450px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+}
+
+.missions-list:hover body {
+    overflow: hidden;
+}
+
+.mission-details-container {
+    width: 75%;
+}
+
+
+/******************************/
+/*        RESPONSIVE          */
+/******************************/
 @media (max-width: 991px) {
     /***** USER *****/
     .btn-profile-dc, .btn-profile-pwd {
@@ -68,6 +91,11 @@ ul.messages {
     /***** MESSAGING *****/
     .message-box {
         max-width: 75%;
+    }
+
+    /***** MISSION *****/
+    .mission-details-container {
+        width: 90%;
     }
 }
 

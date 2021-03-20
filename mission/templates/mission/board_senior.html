@@ -1,0 +1,39 @@
+<!-- MISSIONS BOARD SENIOR -->
+
+{% extends 'mission/index.html' %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>Liste des missions créées</h3>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="missions-list w-100 list-group align-items-center pt-2 pb-2 border rounded {% if not missions %}justify-content-center{% endif %}">
+            {% if missions %}
+                {% for obj in missions %}
+                    <div class="row justify-content-between mb-2 w-75 list-group-item-action border-bottom">
+                        <div class="col-md-6 d-flex align-items-center">
+                            {{ obj.mission.title }}
+                        </div>
+
+                        <a class="col-md-2 btn btn-secondary btn-outline mx-1" href="{% url 'mission-details' uidb64=obj.uid %}">
+                            détails
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucunes Missions</p>
+            {% endif %}
+        </div>
+
+        <div class="row mt-2 justify-content-end">
+            <a class="col-md-2 btn btn-primary btn-outline mx-1" href="{% url 'mission-create' %}">
+                Créer une mission
+            </a>
+        </div>
+    </div>
+
+{% endblock section_content %}

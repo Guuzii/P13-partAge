@@ -1,0 +1,60 @@
+<!-- MISSION DETAILS -->
+
+{% extends 'mission/index.html' %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>Détails de mission</h3>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="mission-details-container container border border-secondary rounded bg-light">
+        <div class="row">
+            <div class="col-md-12 text-center my-4">
+                <h4>{{ mission.title }}</h4>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12 mb-2">
+                <div><span class="font-weight-bold">Créée le : </span>{{ mission.created_at|date:'d/m/Y' }}</div>
+                <div><span class="font-weight-bold">Par : </span>{{ mission.bearer_user.first_name }} {{ mission.bearer_user.last_name }}</div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div><span class="font-weight-bold">Statut : </span>{{ mission.status.label }}</div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12 mb-2">
+                <p class="font-weight-bold">Description :</p>
+                <p class="pl-3">{{ mission.description }}</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12 mb-2">
+                <div><span class="font-weight-bold">Catégorie : </span>{{ mission.category.label }}</div>
+                <div><span class="font-weight-bold">Récompense d'or : </span>{{ mission.category.base_reward_amount }} po</div>
+                <div><span class="font-weight-bold">Récompense d'or bonus : </span>{{ mission.bonus_reward.reward_amount }} po</div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <p class="font-weight-bold">Récompense total :</p>                
+                <p class="pl-3">{{ mission.category.base_reward_amount|add:mission.bonus_reward.reward_amount }} po et {{ mission.bonus_reward.description }}</p>
+            </div>
+        </div>
+    </div>
+
+    
+
+{% endblock section_content %}
