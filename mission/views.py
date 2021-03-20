@@ -95,9 +95,10 @@ class MissionDetails(View):
                 applicants_with_uid = []
 
                 for applicant in applicants:
+                    uid = urlsafe_base64_encode(force_bytes(applicant.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
                     applicants_with_uid.append({
                         'user': applicant,
-                        'uid': urlsafe_base64_encode(force_bytes(applicant.pk)),
+                        'uid': uid,
                     })
                 
                 self.context['senior'] = True
@@ -106,13 +107,14 @@ class MissionDetails(View):
                 return render(request, self.template_name, self.context)
             elif (request.user.user_type == self.junior_type):
                 # JUNIOR
+                uid = urlsafe_base64_encode(force_bytes(request.user.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
                 self.context['senior'] = False
                 self.context['form'] = UserMessageForm()
                 self.context['form_id'] = "send-message-form"
                 self.context['form_action'] = "message-conv"
                 self.context['submit_button_label'] = _("Postuler")
                 self.context['back_url_name'] = "mission-board"
-                self.context['uid'] = uidb64
+                self.context['uid'] = uid
                 
                 return render(request, self.template_name, self.context)
             else:

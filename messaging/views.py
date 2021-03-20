@@ -14,24 +14,57 @@ from messaging.models.message import UserMessage
 from messaging.models.message_status import UserMessageStatus
 
 from user.models.custom_user import CustomUser
+from mission.models.mission_status import MissionStatus
+from mission.models.mission import Mission
 
 
-def get_user_by_uid(uidb64):    
+def get_user_by_uid(uidb64):
+    uidb64_split = uidb64.split('-')
     try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        user = CustomUser.objects.get(pk=uid)
+        user_uid = force_text(urlsafe_base64_decode(uidb64_split[0]))
+        user = CustomUser.objects.get(pk=user_uid)
     except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
         user = None
 
     return user
 
-def get_conversation_messages(auth_user, related_user):
-    conversation_messages = UserMessage.objects.filter(
-        Q(Q(sender_user=auth_user) & Q(receiver_user=related_user)) |
-        Q(Q(sender_user=related_user) & Q(receiver_user=auth_user))
-    ).order_by('created_at')
+def get_mission_by_uid(uidb64):
+    uidb64_split = uidb64.split('-')
+    try:
+        mission_uid = force_text(urlsafe_base64_decode(uidb64_split[1]))
+        mission = Mission.objects.get(pk=mission_uid)
+    except (TypeError, ValueError, OverflowError, Mission.DoesNotExist):
+        mission = None
+
+    return mission
+
+def get_conversation_messages(auth_user, related_user, mission=None):
+    if (mission):
+        conversation_messages = UserMessage.objects.filter(
+            Q(Q(sender_user=auth_user) & Q(receiver_user=related_user) & Q(mission__pk=mission.pk)) |
+            Q(Q(sender_user=related_user) & Q(receiver_user=auth_user) & Q(mission__pk=mission.pk))
+        ).order_by('created_at')
+    else:
+        conversation_messages = UserMessage.objects.filter(
+            Q(Q(sender_user=auth_user) & Q(receiver_user=related_user)) |
+            Q(Q(sender_user=related_user) & Q(receiver_user=auth_user))
+        ).order_by('created_at')
 
     return conversation_messages
+
+def get_conversation_messages_unviewed(auth_user, related_user, mission=None):    
+    if (mission):
+        conversation_messages_unviewed = UserMessage.objects.filter(
+            Q(Q(sender_user=related_user) & Q(receiver_user=auth_user) & Q(mission__pk=mission.pk)) & 
+            Q(is_viewed=False)
+        ).order_by('created_at')
+    else:
+        conversation_messages_unviewed = UserMessage.objects.filter(
+            Q(Q(sender_user=related_user) & Q(receiver_user=auth_user)) & 
+            Q(is_viewed=False)
+        ).order_by('created_at')
+
+    return conversation_messages_unviewed
 
 
 class MessageInbox(View):
@@ -39,32 +72,34 @@ class MessageInbox(View):
     context = {
         'title': _("BOITE DE RECEPTION"),
     }
+    mission_status_close = MissionStatus.objects.get(label__iexact='close')
+    mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
 
     def get(self, request):
-        sender_user_messages_distinct = UserMessage.objects.filter(sender_user=request.user).order_by('receiver_user').distinct('receiver_user')
-        receiver_user_messages_distinct = UserMessage.objects.filter(receiver_user=request.user).order_by('sender_user').distinct('sender_user')
+        receiver_user_messages_distinct = UserMessage.objects.filter(receiver_user=request.user).exclude(
+            Q(mission__status=self.mission_status_close) | Q(mission__status=self.mission_status_finish)
+        ).order_by('sender_user').distinct('sender_user')
         related_users = []
 
-        for message in sender_user_messages_distinct:
-            related_users.append(message.receiver_user)
-        
         for message in receiver_user_messages_distinct:
-            if (message.sender_user not in related_users):
-                related_users.append(message.sender_user)
+            related_users.append({
+                'user': message.sender_user,
+                'mission': message.mission
+            })
 
         related_users_with_uid = []
 
-        for user in related_users:
+        for obj in related_users:
+            uidb64 = urlsafe_base64_encode(force_bytes(obj['user'].pk)) + "-" + urlsafe_base64_encode(force_bytes(obj['mission'].pk))
             unreads = False
-            unread_messages = UserMessage.objects.filter(
-                Q(Q(sender_user=user) & Q(receiver_user=request.user)) & Q(is_viewed=False)
-            )
+            unread_messages = get_conversation_messages_unviewed(request.user, obj['user'], obj['mission'])
             if (len(unread_messages) > 0):
                 unreads = True
 
+
             related_users_with_uid.append({
-                'user': user,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'user': obj['user'],
+                'uid': uidb64,
                 'unreads': unreads
             })
         
@@ -79,11 +114,13 @@ class MessageConversation(View):
         'form_id': "send-message-form",
         'form_action': 'message-conv',
         'submit_button_label': _("Envoyer"),
+        'back_url_name': 'message-inbox'
     }
 
     def get(self, request, uidb64):
         self.context['errors'] = None
         related_user = get_user_by_uid(uidb64)
+        mission = get_mission_by_uid(uidb64)
 
         if related_user is not None:
             if(request.GET.get('infos')):
@@ -100,21 +137,19 @@ class MessageConversation(View):
                     }
                 })
 
-            conversation_messages_unviewed = UserMessage.objects.filter(
-               Q(Q(sender_user=related_user) & Q(receiver_user=request.user)) & Q(is_viewed=False)
-            )
+            conversation_messages_unviewed = get_conversation_messages_unviewed(request.user, related_user, mission)
             for message in conversation_messages_unviewed:
                 message.is_viewed = True
                 message.save()
 
             if(request.GET.get('refresh')):
-                conversation_messages_json = serializers.serialize('json', get_conversation_messages(request.user, related_user))
+                conversation_messages_json = serializers.serialize('json', get_conversation_messages(request.user, related_user, mission))
                 return HttpResponse(conversation_messages_json, content_type='application/json')
 
             self.context['form'] = UserMessageForm()
             self.context['uid'] = uidb64
             self.context['related_user'] = related_user
-            self.context['conversation_messages'] = get_conversation_messages(request.user, related_user)
+            self.context['conversation_messages'] = get_conversation_messages(request.user, related_user, mission)
             
             return render(request, self.template_name, self.context)
         else:                
@@ -128,6 +163,7 @@ class MessageConversation(View):
     def post(self, request, uidb64):
         self.context['errors'] = None
         related_user = get_user_by_uid(uidb64)
+        mission = get_mission_by_uid(uidb64)
 
         if related_user is not None:
             self.context['uid'] = uidb64
@@ -141,6 +177,7 @@ class MessageConversation(View):
                 new_message = UserMessage(
                     sender_user=request.user,
                     receiver_user=related_user,
+                    mission=mission,
                     status=created_status,
                     is_support=related_user.is_superuser,
                     content=form.cleaned_data.get('message_content')
