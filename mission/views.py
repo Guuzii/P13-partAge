@@ -32,40 +32,79 @@ def get_mission_by_uid(uidb64):
 
 
 class MissionBoard(View):
+    template_name = 'mission/board.html'
     context = {
         'title': _("TABLEAU DES MISSIONS"),
     }
     senior_type = UserType.objects.get(label__iexact="senior")
     junior_type = UserType.objects.get(label__iexact="junior")
+    mission_status_open = MissionStatus.objects.get(label__iexact='open')
+    mission_status_ongoing = MissionStatus.objects.get(label__iexact='ongoing')
+    mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
 
     def get(self, request):
-        if (request.user.user_type == self.senior_type):
-            # SENIOR
-            missions = Mission.objects.filter(bearer_user=request.user)
-
-            missions_with_uid = []
-            for mission in missions:
-                missions_with_uid.append({
-                    'mission': mission,
-                    'uid': urlsafe_base64_encode(force_bytes(mission.pk))
-                })
-            
-            self.template_name = 'mission/board_senior.html'
-            self.context['missions'] = missions_with_uid
-
-            return render(request, self.template_name, self.context)
-        elif (request.user.user_type == self.junior_type):
-            # JUNIOR
-            self.template_name = 'mission/board_junior.html'
-
-            return render(request, self.template_name, self.context)
-        else:
+        if (request.user.user_type not in [self.senior_type, self.junior_type]):
             messages.error(
                 request, 
                 message=_("Vous ne pouvez pas accéder aux missions car vous n'avez pas de type utilisateur défini"),
                 extra_tags="alert-danger"
             )
             return redirect('home')
+
+        if (request.GET.get('status')):
+            mission_status = MissionStatus.objects.get(label__iexact=request.GET.get('status'))
+
+            if (request.user.user_type == self.senior_type):
+                missions = Mission.objects.filter(Q(bearer_user=request.user) & Q(status__pk=mission_status.pk))
+            else:
+                if (mission_status == self.mission_status_open):
+                    missions = Mission.objects.filter(status__pk=self.mission_status_open.pk)
+                else:
+                    missions = Mission.objects.filter(Q(acceptor_user=request.user) & Q(status__pk=mission_status.pk))
+
+
+            missions_with_uid = []
+            for mission in missions:
+                missions_with_uid.append({
+                    'mission': serializers.serialize('json', (mission,)),
+                    'uid': urlsafe_base64_encode(force_bytes(mission.pk))
+                })
+
+            request.session['mission_filter'] = request.GET.get('status')
+            return JsonResponse(missions_with_uid, safe=False)                
+
+        if (request.user.user_type == self.senior_type):
+            self.context['senior'] = True
+        else:
+            self.context['senior'] = False
+
+        status_filter = request.session.get('mission_filter')
+
+        if (status_filter):
+            mission_status = MissionStatus.objects.get(label__iexact=status_filter)
+            if (request.user.user_type == self.senior_type):
+                missions = Mission.objects.filter(Q(bearer_user=request.user) & Q(status__pk=mission_status.pk))
+            else:
+                if (mission_status == self.mission_status_open):
+                    missions = Mission.objects.filter(status__pk=self.mission_status_open.pk)
+                else:
+                    missions = Mission.objects.filter(Q(acceptor_user=request.user) & Q(status__pk=mission_status.pk))
+        else:
+            if (request.user.user_type == self.senior_type):
+                missions = Mission.objects.filter(Q(bearer_user=request.user) & Q(status__pk=self.mission_status_open.pk))
+            else:
+                missions = Mission.objects.filter(status__pk=self.mission_status_open.pk)
+
+        missions_with_uid = []
+        for mission in missions:
+            missions_with_uid.append({
+                'mission': mission,
+                'uid': urlsafe_base64_encode(force_bytes(mission.pk))
+            })
+            
+        self.context['missions'] = missions_with_uid
+
+        return render(request, self.template_name, self.context)
 
 
 class MissionDetails(View):
@@ -107,7 +146,7 @@ class MissionDetails(View):
                 return render(request, self.template_name, self.context)
             elif (request.user.user_type == self.junior_type):
                 # JUNIOR
-                uid = urlsafe_base64_encode(force_bytes(request.user.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
+                uid = urlsafe_base64_encode(force_bytes(mission.bearer_user.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
                 self.context['senior'] = False
                 self.context['form'] = UserMessageForm()
                 self.context['form_id'] = "send-message-form"
@@ -127,12 +166,11 @@ class MissionDetails(View):
         else:                
             messages.error(
                 request, 
-                message=_("Un problème est survenu au moment d'afficher les détails de la mission"),
+                message=_("Un problème est survenu au moment d'afficher les détails de la mission, la mission est inexistante"),
                 extra_tags="alert-danger"
             )
             return redirect('mission-board')
     
-
 
 class MissionCreate(View):
     template_name = 'mission/create.html'
@@ -188,7 +226,7 @@ class MissionCreate(View):
                 if (created):
                     messages.success(
                         request, 
-                        message=_("Mission créée avec succés. Elle sera disponible pour les utilisateurs unefois validée par un Administrateur"),
+                        message=_("Mission créée avec succés. Elle sera disponible pour les utilisateurs une fois validée par un Administrateur"),
                         extra_tags="alert-success"
                     )
                 else:

@@ -6,7 +6,6 @@ $(document).ready(() => {
         type: "GET",
         url: $(location).attr('href') + '?infos=1',
         success: (response) => {
-            console.log(response);
             missionId = response;
         }
     });
@@ -24,11 +23,11 @@ $(document).ready(() => {
             url: $('#send-message-form').attr('action'),
             data: {
                 'csrfmiddlewaretoken': csrfToken,
-                'message_content': messageContent,
-                'mission_id': missionId
+                'message_content': messageContent
             },
             success: (response) => {
                 $('#id_message_content').val('');
+                window.location.href = response;
             },
             error: (response) => {
                 var r = jQuery.parseJSON(response.responseText);

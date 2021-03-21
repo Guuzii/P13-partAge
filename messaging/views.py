@@ -1,7 +1,7 @@
 from django.core import serializers
-from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.shortcuts import render, redirect, reverse, get_object_or_404, get_list_or_404
 from django.views import View
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
@@ -81,6 +81,7 @@ class MessageInbox(View):
         ).order_by('sender_user').distinct('sender_user')
         related_users = []
 
+        print(receiver_user_messages_distinct)
         for message in receiver_user_messages_distinct:
             related_users.append({
                 'user': message.sender_user,
@@ -184,8 +185,12 @@ class MessageConversation(View):
                 )
                 new_message.save()
 
-                new_message_json = serializers.serialize('json', (new_message,))
-                return HttpResponse(new_message_json, content_type='application/json')
+                if ("mission" in request.headers['Referer']):
+                    url = reverse('mission-board')
+                    return HttpResponse(url)
+                else:
+                    new_message_json = serializers.serialize('json', (new_message,))
+                    return HttpResponse(new_message_json, content_type='application/json')
             else:
                 return JsonResponse(data=form.errors.get_json_data(), safe=False, status=500)
         else:                

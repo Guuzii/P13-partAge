@@ -1,0 +1,58 @@
+<!-- MISSIONS BOARD SENIOR -->
+
+{% extends 'mission/index.html' %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>Liste des missions créées</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <ul class="nav nav-pills justify-content-center align-items-center">
+                <li class="mission-status-filter btn mx-1 btn-light" status-name="open">Ouverte</li>
+                <li class="mission-status-filter btn mx-1 btn-light" status-name="ongoing">En cours</li>
+                <li class="mission-status-filter btn mx-1 btn-light" status-name="finish">Terminée</li>
+                {% if senior %}
+                    <li class="mission-status-filter btn mx-1 btn-light" status-name="close">Fermée</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="missions-list w-100 list-group align-items-center py-3 border rounded bg-light {% if not missions %}justify-content-center{% endif %}">
+            {% if missions %}
+                {% for obj in missions %}
+                    <div class="row justify-content-between mb-2 w-75 list-group-item-action border-bottom">
+                        <div class="col-md-6 d-flex align-items-center">
+                            {{ obj.mission.title }}
+                        </div>
+
+                        <a class="col-md-2 btn btn-secondary btn-outline mx-1" href="{% url 'mission-details' uidb64=obj.uid %}">
+                            détails
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucunes Missions</p>
+            {% endif %}
+        </div>
+
+        {% if senior %}
+            <div class="row mt-2 justify-content-end">
+                <a class="col-md-2 btn btn-primary btn-outline mx-1" href="{% url 'mission-create' %}">
+                    Créer une mission
+                </a>
+            </div>
+        {% endif %}
+    </div>    
+    
+    {% load static %}
+    <!-- Messaging conversation javascript -->
+    <script type="text/javascript" src="{% static 'platform/js/mission/mission-filters.js' %}"></script>
+
+{% endblock section_content %}

@@ -11,7 +11,7 @@ ul.messages {
 /******************************/
 /*      USER STYLES      */
 /******************************/
-.btn-profile-dc, .btn-profile-pwd {
+#btn-profile-dc, #btn-profile-pwd {
     width: 60%;
 }
 
@@ -71,13 +71,19 @@ ul.messages {
     width: 75%;
 }
 
+.active-filter {
+    background-color: #0372ca;
+    border-color: #0372ca;
+    color: #FFF;
+}
+
 
 /******************************/
 /*        RESPONSIVE          */
 /******************************/
 @media (max-width: 991px) {
     /***** USER *****/
-    .btn-profile-dc, .btn-profile-pwd {
+    #btn-profile-dc, #btn-profile-pwd {
         width: 80%;
     }
 }
@@ -105,7 +111,7 @@ ul.messages {
 
 @media (max-width: 575px) {
     /***** USER *****/
-    .btn-profile-dc, .btn-profile-pwd {
+    #btn-profile-dc, #btn-profile-pwd {
         width: 100%;
     }
 
