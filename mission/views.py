@@ -7,6 +7,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
+from django.utils.timezone import now
 
 from mission.forms import CreateMissionForm
 
@@ -19,16 +20,35 @@ from messaging.forms import UserMessageForm
 
 from messaging.models.message import UserMessage
 from user.models.user_type import UserType
+from user.models.custom_user import CustomUser
 
 
-def get_mission_by_uid(uidb64):    
-    try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        mission = Mission.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, Mission.DoesNotExist):
-        mission = None
+def get_mission_by_uid(uidb64):
+    uidb64_split = uidb64.split('-')
+    if (len(uidb64_split) > 1):
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64_split[1]))
+            mission = Mission.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, Mission.DoesNotExist):
+            mission = None
+    else:
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            mission = Mission.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, Mission.DoesNotExist):
+            mission = None
 
     return mission
+
+def get_acceptor_user_by_uid(uidb64):
+    uidb64_split = uidb64.split('-')
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64_split[0]))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, Mission.DoesNotExist):
+        user = None
+
+    return user
 
 
 class MissionBoard(View):
@@ -114,6 +134,7 @@ class MissionDetails(View):
     }
     senior_type = UserType.objects.get(label__iexact="senior")
     junior_type = UserType.objects.get(label__iexact="junior")
+    mission_status_ongoing = MissionStatus.objects.get(label__iexact="ongoing")
 
     def get(self, request, uidb64):
         mission = get_mission_by_uid(uidb64)
@@ -134,26 +155,40 @@ class MissionDetails(View):
                 applicants_with_uid = []
 
                 for applicant in applicants:
+                    bearer_respond = UserMessage.objects.filter(
+                        Q(Q(sender_user=request.user) & Q(receiver_user=applicant)) &
+                        Q(mission=mission)
+                    ).exists()
                     uid = urlsafe_base64_encode(force_bytes(applicant.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
                     applicants_with_uid.append({
                         'user': applicant,
                         'uid': uid,
+                        'bearer_respond': bearer_respond
                     })
                 
+                if (mission.status == self.mission_status_ongoing):
+                    self.context['uid'] = urlsafe_base64_encode(force_bytes(mission.acceptor_user.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
+
                 self.context['senior'] = True
                 self.context['applicants'] = applicants_with_uid
                 
                 return render(request, self.template_name, self.context)
             elif (request.user.user_type == self.junior_type):
                 # JUNIOR
-                uid = urlsafe_base64_encode(force_bytes(mission.bearer_user.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
+                has_apply = UserMessage.objects.filter(Q(sender_user=request.user) & Q(mission=mission)).exists()
                 self.context['senior'] = False
-                self.context['form'] = UserMessageForm()
-                self.context['form_id'] = "send-message-form"
-                self.context['form_action'] = "message-conv"
-                self.context['submit_button_label'] = _("Postuler")
-                self.context['back_url_name'] = "mission-board"
-                self.context['uid'] = uid
+                self.context['uid'] = urlsafe_base64_encode(force_bytes(mission.bearer_user.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
+
+                if (has_apply):
+                    got_response = UserMessage.objects.filter(Q(receiver_user=request.user) & Q(mission=mission)).exists()
+                    self.context['has_apply'] = has_apply
+                    self.context['got_response'] = got_response
+                else:
+                    self.context['form'] = UserMessageForm()
+                    self.context['form_id'] = "send-message-form"
+                    self.context['form_action'] = "message-conv"
+                    self.context['submit_button_label'] = _("Postuler")
+                    self.context['back_url_name'] = "mission-board"
                 
                 return render(request, self.template_name, self.context)
             else:
@@ -243,3 +278,57 @@ class MissionCreate(View):
                 return render(request, self.template_name, self.context)
         else:
             return redirect('mission-board')
+
+
+class MissionManagement(View):
+    mission_status_ongoing = MissionStatus.objects.get(label__iexact="ongoing")
+    mission_status_finish = MissionStatus.objects.get(label__iexact="finish")
+
+    def post(self, request, uidb64):
+        mission = get_mission_by_uid(uidb64)
+
+        if (mission is not None ):
+            if (request.POST.get('action') == "accept" and mission.status != self.mission_status_ongoing):
+                acceptor_user = get_acceptor_user_by_uid(uidb64)
+                mission.acceptor_user = acceptor_user
+                mission.status = self.mission_status_ongoing
+                mission.updated_at = now()
+                mission.save()
+                                
+                messages.success(
+                    request, 
+                    message=_("Utilisateur {} {} accepté pour la mission".format(acceptor_user.first_name, acceptor_user.last_name)),
+                    extra_tags="alert-success"
+                )
+            elif (request.POST.get('action') == "end" and mission.status == self.mission_status_ongoing):
+                if (request.user == mission.bearer_user):
+                    mission.bearer_validate = True
+                else:
+                    mission.acceptor_validate = True
+
+                if (mission.bearer_validate and mission.acceptor_validate):
+                    reward_receiver = CustomUser.objects.get(pk=mission.acceptor_user.pk)
+                    reward_receiver.experience_point += mission.category.xp_amount
+                    reward_receiver.wallet.balance += mission.category.base_reward_amount + mission.bonus_reward.reward_amount
+                    reward_receiver.save()
+                    reward_receiver.wallet.save()
+                    mission.status = self.mission_status_finish            
+                
+                mission.updated_at = now()
+                mission.save()
+            else:                
+                messages.error(
+                    request, 
+                    message=_("Action non comprise"),
+                    extra_tags="alert-danger"
+                )
+            
+            return redirect('mission-details', uidb64=urlsafe_base64_encode(force_bytes(mission.pk)))
+        else:                
+            messages.error(
+                request, 
+                message=_("Mission inexistante"),
+                extra_tags="alert-danger"
+            )
+            return redirect('mission-board')
+    

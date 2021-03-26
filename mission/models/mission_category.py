@@ -10,6 +10,9 @@ class MissionCategory(models.Model):
     base_reward_amount = models.SmallIntegerField(
         verbose_name=_('Mission category base reward')
     )
+    xp_amount = models.IntegerField(
+        verbose_name=_('Mission category base reward')
+    )
 
     class Meta:
         db_table  = 'mission_ref_mission_category'

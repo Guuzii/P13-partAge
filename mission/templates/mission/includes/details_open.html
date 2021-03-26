@@ -1,0 +1,79 @@
+<!-- MISSION DETAILS - STATUS OPEN -->
+ 
+<div class="divider-custom">
+    <div class="divider-custom-line"></div>
+</div>
+
+{% if senior %}
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>Postulants</h3>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="container">
+        <div class="mission-applicants-list w-100 list-group align-items-center py-3 border rounded {% if not applicants %}justify-content-center{% endif %}">
+            {% if applicants %}
+                {% for obj in applicants %}
+                    <div class="row justify-content-between mb-2 w-75 list-group-item-action border-bottom">
+                        <div class="col-md-6 d-flex align-items-center">
+                            {{ obj.user.first_name }} {{ obj.user.last_name }}
+                        </div>
+                        
+                        <div class="col-md-6 px-0 d-flex justify-content-end align-items-center">
+                            <div>
+                                <a class="btn btn-secondary btn-outline mx-1" href="{% url 'message-conv' uidb64=obj.uid %}">
+                                    Conversation
+                                </a>
+                            </div>
+                            {% if obj.bearer_respond %}
+                                <form action="{% url 'mission-manage' uidb64=obj.uid %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="accept">
+                                    <input class="btn btn-success btn-outline mx-1" type="submit" name="upvote" value="Accepter"/>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucun postulants</p>
+            {% endif %}
+        </div>
+
+        <div class="row mt-2">
+            <a class="col-md-2 btn btn-danger btn-outline mx-1" href="{% url 'mission-board' %}">
+                Retour
+            </a>
+        </div>
+    </div>
+{% else %}
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>Postuler</h3>
+        </div>
+    </div>
+
+    <br/>
+
+    {% if has_apply %}
+        <div class="container">                
+            <div class="row justify-content-center align-items-center">
+                <p>Vous avez déjà postulé pour cette mission</p>
+            </div>
+            {% if got_response %}                
+                <div class="row justify-content-center align-items-center">
+                    <a class="col-md-2 btn btn-secondary btn-outline mx-1" href="{% url 'message-conv' uidb64=uid %}">
+                        conversation
+                    </a>
+                </div>                                            
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="container">
+            {% include 'messaging/includes/form.html' %}
+        </div>
+    {% endif %}
+{% endif %}

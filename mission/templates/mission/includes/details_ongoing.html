@@ -1,0 +1,48 @@
+<!-- MISSION DETAILS - STATUS ONGOING -->
+ 
+<div class="divider-custom">
+    <div class="divider-custom-line"></div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12 text-center mb-2">
+        <h3>Mission en cours</h3>
+    </div>
+</div>
+
+<br/>
+
+<div class="container">
+    {% if senior and mission.bearer_validate or not senior and mission.acceptor_validate %}
+        <div class="row justify-content-center align-items-center">
+            Vous avez validez la fin de mission
+        </div>
+
+        <br/>
+
+        <div class="row mt-2">
+            <a class="col-md-2 btn btn-danger btn-outline mx-1" href="{% url 'mission-board' %}">
+                Retour
+            </a>
+        </div>
+    {% else  %}
+        <div class="row justify-content-around align-items-center">
+            <div>
+                <a class="btn btn-danger btn-outline mx-1 px-4" href="{% url 'mission-board' %}">
+                    Retour
+                </a>
+            </div>
+            <div class="d-flex">
+                <a class="btn btn-secondary btn-outline mx-1" href="{% url 'message-conv' uidb64=uid %}">
+                    Conversation
+                </a>
+                <form action="{% url 'mission-manage' uidb64=uid %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="end">
+                    <input class="btn btn-success btn-outline mx-1" type="submit" name="upvote" value="Valider fin de mission"/>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>

@@ -81,7 +81,6 @@ class MessageInbox(View):
         ).order_by('sender_user').distinct('sender_user')
         related_users = []
 
-        print(receiver_user_messages_distinct)
         for message in receiver_user_messages_distinct:
             related_users.append({
                 'user': message.sender_user,
@@ -96,7 +95,6 @@ class MessageInbox(View):
             unread_messages = get_conversation_messages_unviewed(request.user, obj['user'], obj['mission'])
             if (len(unread_messages) > 0):
                 unreads = True
-
 
             related_users_with_uid.append({
                 'user': obj['user'],
@@ -117,13 +115,15 @@ class MessageConversation(View):
         'submit_button_label': _("Envoyer"),
         'back_url_name': 'message-inbox'
     }
+    mission_status_close = MissionStatus.objects.get(label__iexact='close')
+    mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
 
     def get(self, request, uidb64):
         self.context['errors'] = None
         related_user = get_user_by_uid(uidb64)
         mission = get_mission_by_uid(uidb64)
 
-        if related_user is not None:
+        if (related_user is not None and (mission.status != self.mission_status_finish or mission.status != self.mission_status_close)):
             if(request.GET.get('infos')):
                 created_status = UserMessageStatus.objects.get(label="created")
                 return JsonResponse({
@@ -149,8 +149,10 @@ class MessageConversation(View):
 
             self.context['form'] = UserMessageForm()
             self.context['uid'] = uidb64
+            self.context['uid_mission'] = urlsafe_base64_encode(force_bytes(mission.pk))
             self.context['related_user'] = related_user
             self.context['conversation_messages'] = get_conversation_messages(request.user, related_user, mission)
+            self.context['mission'] = mission
             
             return render(request, self.template_name, self.context)
         else:                
@@ -185,7 +187,12 @@ class MessageConversation(View):
                 )
                 new_message.save()
 
-                if ("mission" in request.headers['Referer']):
+                if ("mission" in request.headers['Referer']):                
+                    messages.success(
+                        request, 
+                        message=_("Vous avez postulez !"),
+                        extra_tags="alert-success"
+                    )
                     url = reverse('mission-board')
                     return HttpResponse(url)
                 else:

@@ -27,7 +27,8 @@ class Command(BaseCommand):
             if not MissionCategory.objects.filter(label__iexact=mission_category['label']):
                 new_mission_category = MissionCategory(
                     label=mission_category['label'], 
-                    base_reward_amount=mission_category['default_reward']
+                    base_reward_amount=mission_category['default_reward'],
+                    xp_amount=mission_category['xp_amount']
                 )
                 new_mission_category.save()
                 self.stdout.write("Adding new mission category into database : {}".format(new_mission_category))

@@ -159,8 +159,8 @@ MESSAGE_STATUS = (
 )
 
 MISSION_STATUS = (
-    "open",
     "close",
+    "open",
     "ongoing",
     "finish",
 )
@@ -169,14 +169,17 @@ MISSION_CATEGORY = [
     {
         'label': "easy",
         'default_reward': 100,
+        'xp_amount': 10
     },
     {
         'label': "medium",
         'default_reward': 200,
+        'xp_amount': 20
     },
     {
         'label': "hard",
         'default_reward': 400,
+        'xp_amount': 30
     },
 ]
 
