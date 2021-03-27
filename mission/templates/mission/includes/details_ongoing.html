@@ -27,6 +27,11 @@
             </a>
         </div>
     {% else  %}
+        <div class="row flex-column justify-content-center align-items-center mb-5">
+            <p>Utilisateur en charge de la mission :</p>
+            <p class="font-weight-bold">{{ acceptor_user.first_name }} {{ acceptor_user.last_name }}</p>
+            <p>Total points d'experience : <span class="font-weight-bold">{{ acceptor_user.experience_point }} pts</span></p>
+        </div>
         <div class="row justify-content-around align-items-center">
             <div>
                 <a class="btn btn-danger btn-outline mx-1 px-4" href="{% url 'mission-board' %}">

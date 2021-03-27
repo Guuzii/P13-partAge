@@ -145,7 +145,15 @@ class MissionDetails(View):
             self.context['mission'] = mission
 
             if (request.user.user_type == self.senior_type):
-                # SENIOR
+                # SENIOR   
+                self.context['senior'] = True
+
+                if (mission.status == self.mission_status_ongoing):
+                    self.context['acceptor_user'] = mission.acceptor_user
+                    self.context['uid'] = urlsafe_base64_encode(force_bytes(mission.acceptor_user.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
+                
+                    return render(request, self.template_name, self.context)
+
                 receiver_user_messages_distinct = UserMessage.objects.filter(Q(receiver_user=request.user) & Q(mission=mission)).order_by('sender_user').distinct('sender_user')
                 applicants = []
 
@@ -165,11 +173,7 @@ class MissionDetails(View):
                         'uid': uid,
                         'bearer_respond': bearer_respond
                     })
-                
-                if (mission.status == self.mission_status_ongoing):
-                    self.context['uid'] = urlsafe_base64_encode(force_bytes(mission.acceptor_user.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
 
-                self.context['senior'] = True
                 self.context['applicants'] = applicants_with_uid
                 
                 return render(request, self.template_name, self.context)

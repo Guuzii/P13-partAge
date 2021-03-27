@@ -7,6 +7,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
+from django.conf import settings
 
 from messaging.forms import UserMessageForm
 
@@ -72,12 +73,16 @@ class MessageInbox(View):
     context = {
         'title': _("BOITE DE RECEPTION"),
     }
-    mission_status_close = MissionStatus.objects.get(label__iexact='close')
-    mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
+    # mission_status_close = MissionStatus.objects.get(label__iexact='close')
+    # mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
 
     def get(self, request):
+        # receiver_user_messages_distinct = UserMessage.objects.filter(receiver_user=request.user).exclude(
+        #     Q(mission__status=self.mission_status_close) | Q(mission__status=self.mission_status_finish)
+        # ).order_by('sender_user').distinct('sender_user')
+        # related_users = []
         receiver_user_messages_distinct = UserMessage.objects.filter(receiver_user=request.user).exclude(
-            Q(mission__status=self.mission_status_close) | Q(mission__status=self.mission_status_finish)
+            Q(mission__status__label=settings.MISSION_STATUS_ENUM.CLOSE) | Q(mission__status__label=settings.MISSION_STATUS_ENUM.FINISH)
         ).order_by('sender_user').distinct('sender_user')
         related_users = []
 
@@ -115,15 +120,16 @@ class MessageConversation(View):
         'submit_button_label': _("Envoyer"),
         'back_url_name': 'message-inbox'
     }
-    mission_status_close = MissionStatus.objects.get(label__iexact='close')
-    mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
+    # mission_status_close = MissionStatus.objects.get(label__iexact='close')
+    # mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
 
     def get(self, request, uidb64):
         self.context['errors'] = None
         related_user = get_user_by_uid(uidb64)
         mission = get_mission_by_uid(uidb64)
 
-        if (related_user is not None and (mission.status != self.mission_status_finish or mission.status != self.mission_status_close)):
+        # if (related_user is not None and (mission.status != self.mission_status_finish or mission.status != self.mission_status_close)):
+        if (related_user is not None and (mission.status.label != settings.MISSION_STATUS_ENUM.FINISH or mission.status.label != settings.MISSION_STATUS_ENUM.CLOSE)):
             if(request.GET.get('infos')):
                 created_status = UserMessageStatus.objects.get(label="created")
                 return JsonResponse({
