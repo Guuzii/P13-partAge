@@ -67,23 +67,23 @@ def get_conversation_messages_unviewed(auth_user, related_user, mission=None):
 
     return conversation_messages_unviewed
 
+def init_mission_status():
+    mission_status_close = MissionStatus.objects.get(label__iexact='close')
+    mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
+    return mission_status_close, mission_status_finish
+
 
 class MessageInbox(View):
     template_name = 'messaging/inbox.html'
     context = {
         'title': _("BOITE DE RECEPTION"),
     }
-    # mission_status_close = MissionStatus.objects.get(label__iexact='close')
-    # mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
 
     def get(self, request):
-        # receiver_user_messages_distinct = UserMessage.objects.filter(receiver_user=request.user).exclude(
-        #     Q(mission__status=self.mission_status_close) | Q(mission__status=self.mission_status_finish)
-        # ).order_by('sender_user').distinct('sender_user')
-        # related_users = []
+        self.mission_status_close, self.mission_status_finish = init_mission_status()
         receiver_user_messages_distinct = UserMessage.objects.filter(receiver_user=request.user).exclude(
-            Q(mission__status__label=settings.MISSION_STATUS_ENUM.CLOSE) | Q(mission__status__label=settings.MISSION_STATUS_ENUM.FINISH)
-        ).order_by('sender_user').distinct('sender_user')
+            Q(mission__status=self.mission_status_close) | Q(mission__status=self.mission_status_finish)
+        ).order_by('mission').distinct('mission')
         related_users = []
 
         for message in receiver_user_messages_distinct:
@@ -103,6 +103,7 @@ class MessageInbox(View):
 
             related_users_with_uid.append({
                 'user': obj['user'],
+                'mission': obj['mission'],
                 'uid': uidb64,
                 'unreads': unreads
             })
@@ -120,16 +121,14 @@ class MessageConversation(View):
         'submit_button_label': _("Envoyer"),
         'back_url_name': 'message-inbox'
     }
-    # mission_status_close = MissionStatus.objects.get(label__iexact='close')
-    # mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
 
     def get(self, request, uidb64):
+        self.mission_status_close, self.mission_status_finish = init_mission_status()
         self.context['errors'] = None
         related_user = get_user_by_uid(uidb64)
         mission = get_mission_by_uid(uidb64)
 
-        # if (related_user is not None and (mission.status != self.mission_status_finish or mission.status != self.mission_status_close)):
-        if (related_user is not None and (mission.status.label != settings.MISSION_STATUS_ENUM.FINISH or mission.status.label != settings.MISSION_STATUS_ENUM.CLOSE)):
+        if (related_user is not None and (mission.status != self.mission_status_finish or mission.status != self.mission_status_close)):
             if(request.GET.get('infos')):
                 created_status = UserMessageStatus.objects.get(label="created")
                 return JsonResponse({

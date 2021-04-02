@@ -18,14 +18,19 @@
                 {% for obj in related_users %}
                     <div class="row justify-content-between mb-2 w-75 list-group-item-action border-bottom">
                         <div class="col-md-6 d-flex align-items-center">
-                            Conversation avec {{ obj.user.first_name }} {{ obj.user.last_name }}
+                            <div>                                
+                                <div>
+                                    Conversation avec {{ obj.user.first_name }} {{ obj.user.last_name }}
+                                </div>
+                                <small>Mission : {{ obj.mission.title }}</small>
+                            </div>
 
                             {% if obj.unreads %}
                                 <span class="unread-message-icon"><i class="fas fa-comment-dots text-primary"></i></span>
                             {% endif %}
                         </div>
 
-                        <a class="col-md-2 btn btn-secondary btn-outline mx-1" href="{% url 'message-conv' uidb64=obj.uid %}">
+                        <a class="col-md-2 btn btn-secondary d-flex justify-content-center align-items-center mx-1" href="{% url 'message-conv' uidb64=obj.uid %}">
                             ouvrir
                         </a>
                     </div>

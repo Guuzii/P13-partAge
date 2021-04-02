@@ -50,19 +50,27 @@ def get_acceptor_user_by_uid(uidb64):
 
     return user
 
+def init_mission_status():
+    mission_status_open = MissionStatus.objects.get(label__iexact='open')
+    mission_status_close = MissionStatus.objects.get(label__iexact='close')
+    mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
+    return mission_status_open, mission_status_close, mission_status_finish
+
+def init_user_type():
+    senior_type = UserType.objects.get(label__iexact="senior")
+    junior_type = UserType.objects.get(label__iexact="junior")
+    return senior_type, junior_type
+
 
 class MissionBoard(View):
     template_name = 'mission/board.html'
     context = {
         'title': _("TABLEAU DES MISSIONS"),
-    }
-    senior_type = UserType.objects.get(label__iexact="senior")
-    junior_type = UserType.objects.get(label__iexact="junior")
-    mission_status_open = MissionStatus.objects.get(label__iexact='open')
-    mission_status_ongoing = MissionStatus.objects.get(label__iexact='ongoing')
-    mission_status_finish = MissionStatus.objects.get(label__iexact='finish')
+    }    
 
     def get(self, request):
+        self.senior_type, self.junior_type = init_user_type()
+        self.mission_status_open, self.mission_status_ongoing, self.mission_status_finish = init_mission_status()
         if (request.user.user_type not in [self.senior_type, self.junior_type]):
             messages.error(
                 request, 
@@ -131,12 +139,11 @@ class MissionDetails(View):
     template_name = 'mission/details.html'
     context = {
         'title': _("DETAILS"),
-    }
-    senior_type = UserType.objects.get(label__iexact="senior")
-    junior_type = UserType.objects.get(label__iexact="junior")
-    mission_status_ongoing = MissionStatus.objects.get(label__iexact="ongoing")
+    }    
 
     def get(self, request, uidb64):
+        self.senior_type, self.junior_type = init_user_type()
+        mission_status_ongoing = MissionStatus.objects.get(label__iexact="ongoing")
         mission = get_mission_by_uid(uidb64)
         if mission is not None:
             if(request.GET.get('infos')):
@@ -148,7 +155,7 @@ class MissionDetails(View):
                 # SENIOR   
                 self.context['senior'] = True
 
-                if (mission.status == self.mission_status_ongoing):
+                if (mission.status == mission_status_ongoing):
                     self.context['acceptor_user'] = mission.acceptor_user
                     self.context['uid'] = urlsafe_base64_encode(force_bytes(mission.acceptor_user.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
                 
@@ -219,26 +226,47 @@ class MissionCreate(View):
         'form_action': 'mission-create',
         'submit_button_label': _("Créer mission"),
     }
-    senior_type = UserType.objects.get(label__iexact="senior")
 
     def get(self, request):
-        if(request.user.user_type == self.senior_type):
+        senior_type = UserType.objects.get(label__iexact="senior")
+        if(request.user.user_type == senior_type):
+            # if (request.GET.get('category_info')):
+            #     mission_categories = MissionCategory.objects.all()
+            #     categories_with_amount = []
+            #     for category in mission_categories:
+            #         categories_with_amount.append({
+            #             'mission': serializers.serialize('json', (mission,)),
+            #             'uid': urlsafe_base64_encode(force_bytes(mission.pk))
+            #         })
             self.context['form'] = CreateMissionForm(user=request.user)
             return render(request, self.template_name, self.context)
         else:
             return redirect('mission-board')
 
     def post(self, request):
-        if(request.user.user_type.pk == self.senior_type.pk):
+        senior_type = UserType.objects.get(label__iexact="senior")
+        if(request.user.user_type == senior_type):
             form = CreateMissionForm(user=request.user, data=request.POST)
 
             if (form.is_valid()):
+                category_reward_amount = form.cleaned_data.get('mission_category').base_reward_amount
+                bonus_reward_amount = int(form.cleaned_data.get('mission_bonus_amount'))
+                mission_total_reward_amount = category_reward_amount + bonus_reward_amount
+
+                if (request.user.wallet.balance < mission_total_reward_amount):
+                    self.context['form'] = form
+                    self.context['errors'] = {
+                        ('balance', "Vous n'avez pas les fonds disponibles pour créer cette mission"),
+                    }
+
+                    return render(request, self.template_name, self.context)                    
+
                 bonus_description = form.cleaned_data.get('mission_bonus_description')
                 if not bonus_description:
                     bonus_description = _("Un grand merci !")
 
                 new_bonus_reward = MissionBonusReward(
-                    reward_amount=int(form.cleaned_data.get('mission_bonus_amount')),
+                    reward_amount=bonus_reward_amount,
                     description=bonus_description
                 )
                 new_bonus_reward.save()
@@ -263,6 +291,8 @@ class MissionCreate(View):
                         created = False
 
                 if (created):
+                    request.user.wallet.balance -= mission_total_reward_amount
+                    request.user.wallet.save()
                     messages.success(
                         request, 
                         message=_("Mission créée avec succés. Elle sera disponible pour les utilisateurs une fois validée par un Administrateur"),
@@ -276,7 +306,7 @@ class MissionCreate(View):
                     )
 
                 return redirect('mission-board')
-            else:                
+            else:
                 self.context['form'] = form
                 self.context['errors'] = form.errors.items()
                 return render(request, self.template_name, self.context)
@@ -285,17 +315,17 @@ class MissionCreate(View):
 
 
 class MissionManagement(View):
-    mission_status_ongoing = MissionStatus.objects.get(label__iexact="ongoing")
-    mission_status_finish = MissionStatus.objects.get(label__iexact="finish")
 
     def post(self, request, uidb64):
+        mission_status_ongoing = MissionStatus.objects.get(label__iexact="ongoing")
+        mission_status_finish = MissionStatus.objects.get(label__iexact="finish")
         mission = get_mission_by_uid(uidb64)
 
         if (mission is not None ):
-            if (request.POST.get('action') == "accept" and mission.status != self.mission_status_ongoing):
+            if (request.POST.get('action') == "accept" and mission.status != mission_status_ongoing):
                 acceptor_user = get_acceptor_user_by_uid(uidb64)
                 mission.acceptor_user = acceptor_user
-                mission.status = self.mission_status_ongoing
+                mission.status = mission_status_ongoing
                 mission.updated_at = now()
                 mission.save()
                                 
@@ -304,7 +334,7 @@ class MissionManagement(View):
                     message=_("Utilisateur {} {} accepté pour la mission".format(acceptor_user.first_name, acceptor_user.last_name)),
                     extra_tags="alert-success"
                 )
-            elif (request.POST.get('action') == "end" and mission.status == self.mission_status_ongoing):
+            elif (request.POST.get('action') == "end" and mission.status == mission_status_ongoing):
                 if (request.user == mission.bearer_user):
                     mission.bearer_validate = True
                 else:
@@ -316,7 +346,7 @@ class MissionManagement(View):
                     reward_receiver.wallet.balance += mission.category.base_reward_amount + mission.bonus_reward.reward_amount
                     reward_receiver.save()
                     reward_receiver.wallet.save()
-                    mission.status = self.mission_status_finish            
+                    mission.status = mission_status_finish            
                 
                 mission.updated_at = now()
                 mission.save()
