@@ -8,7 +8,7 @@ from django.conf import settings
 class CommandUpdateRefsMessagingTest(TestCase):
     def test_custom_command_update_refs_messaging(self):
         out = StringIO()
-        call_command('update_refs_messaging', stdout=out)
+        call_command('update_refs_mission', stdout=out)
         out_value = out.getvalue()
 
         self.assertIn('START UPDATES ON mission', out.getvalue())

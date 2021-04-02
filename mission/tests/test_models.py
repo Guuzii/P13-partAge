@@ -59,7 +59,7 @@ class MissionBonusRewardModelTestCase(TestCase):
         self.assertIsNotNone(self.new_test_mission_bonus)
 
         # Test model __str__ returnd value
-        self.assertEqual(str(self.new_test_mission_bonus), self.new_test_mission_bonus.label)
+        self.assertEqual(str(self.new_test_mission_bonus), self.new_test_mission_bonus.description)
 
         # Test created mission bonus reward datas
         self.assertEqual(self.new_test_mission_bonus.reward_amount, 100)
@@ -94,7 +94,7 @@ class MissionModelTestCase(TestCase):
 
     def test_mission_model(self):
         new_mission = Mission.objects.create(
-            bearer_user=self.bearer_user,
+            bearer_user=self.test_bearer_user,
             status=self.test_mission_status,
             category=self.test_mission_category,
             bonus_reward=self.test_mission_bonus_reward,

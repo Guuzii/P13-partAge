@@ -20,21 +20,6 @@ from mission.models.mission_status import MissionStatus
 from mission.models.mission_bonus_reward import MissionBonusReward
 from mission.models.mission import Mission
 
-
-def get_conversation_messages(auth_user, related_user, mission=None):
-    if (mission):
-        conversation_messages = UserMessage.objects.filter(
-            Q(Q(sender_user=auth_user) & Q(receiver_user=related_user) & Q(mission__pk=mission.pk)) |
-            Q(Q(sender_user=related_user) & Q(receiver_user=auth_user) & Q(mission__pk=mission.pk))
-        ).order_by('created_at')
-    else:
-        conversation_messages = UserMessage.objects.filter(
-            Q(Q(sender_user=auth_user) & Q(receiver_user=related_user)) |
-            Q(Q(sender_user=related_user) & Q(receiver_user=auth_user))
-        ).order_by('created_at')
-
-    return conversation_messages
-
     
 class MessagingInboxTestCase(TestCase):
     def setUp(self):
@@ -215,7 +200,12 @@ class MessagingConversationTestCase(TestCase):
 
         # Test context content
         self.assertEqual(response.context['uid'], uidb64)
-        self.assertEqual(response.context['related_user'], self.test_user_2)       
+        self.assertEqual(response.context['related_user'], self.test_user_2)
+        self.assertEqual(response.context['uid_mission'], urlsafe_base64_encode(force_bytes(self.test_mission.pk)))
+        self.assertEqual(response.context['form_id'], "send-message-form")
+        self.assertEqual(response.context['form_action'], "message-conv")
+        self.assertEqual(response.context['submit_button_label'], "Envoyer")
+        self.assertEqual(response.context['back_url_name'], "message-inbox")       
         
         # Test form used is the right one
         self.assertEqual(

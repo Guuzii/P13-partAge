@@ -129,7 +129,7 @@ class MissionBoard(View):
                 'mission': mission,
                 'uid': urlsafe_base64_encode(force_bytes(mission.pk))
             })
-            
+
         self.context['missions'] = missions_with_uid
 
         return render(request, self.template_name, self.context)
@@ -186,8 +186,15 @@ class MissionDetails(View):
                 return render(request, self.template_name, self.context)
             elif (request.user.user_type == self.junior_type):
                 # JUNIOR
-                has_apply = UserMessage.objects.filter(Q(sender_user=request.user) & Q(mission=mission)).exists()
                 self.context['senior'] = False
+
+                if (mission.status == mission_status_ongoing):
+                    self.context['acceptor_user'] = mission.acceptor_user
+                    self.context['uid'] = urlsafe_base64_encode(force_bytes(mission.bearer_user.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
+                
+                    return render(request, self.template_name, self.context)
+
+                has_apply = UserMessage.objects.filter(Q(sender_user=request.user) & Q(mission=mission)).exists()
                 self.context['uid'] = urlsafe_base64_encode(force_bytes(mission.bearer_user.pk)) + "-" + urlsafe_base64_encode(force_bytes(mission.pk))
 
                 if (has_apply):
@@ -315,7 +322,6 @@ class MissionCreate(View):
 
 
 class MissionManagement(View):
-
     def post(self, request, uidb64):
         mission_status_ongoing = MissionStatus.objects.get(label__iexact="ongoing")
         mission_status_finish = MissionStatus.objects.get(label__iexact="finish")
