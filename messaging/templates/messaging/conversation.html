@@ -27,7 +27,7 @@
     <br/>
 
     <div class="container">
-        <div id="messages-list" class="list-group border rounded bg-light pt-2 pb-2">
+        <div id="messages-list" class="list-container list-group border rounded bg-light pt-2 pb-2">
             {% for message in conversation_messages %}
                 <div class="message-box container position-relative mb-2 {% if message.sender_user == related_user %}align-self-start ml-2{% else %}align-self-end mr-2 bg-secondary{% endif %}">
                     <div class="row mt-2 mb-2">

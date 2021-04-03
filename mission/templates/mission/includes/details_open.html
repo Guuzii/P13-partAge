@@ -14,7 +14,7 @@
     <br/>
 
     <div class="container">
-        <div class="mission-applicants-list w-100 list-group align-items-center py-3 border rounded {% if not applicants %}justify-content-center{% endif %}">
+        <div id="mission-applicants-list" class="list-container w-100 list-group align-items-center py-3 border rounded {% if not applicants %}justify-content-center{% endif %}">
             {% if applicants %}
                 {% for obj in applicants %}
                     <div class="row justify-content-between mb-2 w-75 list-group-item-action border-bottom">

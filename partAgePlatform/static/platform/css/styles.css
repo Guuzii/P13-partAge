@@ -7,6 +7,17 @@ ul.messages {
     list-style: none;
 }
 
+.list-container {
+    height: 450px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: thin
+}
+
+.list-container:hover body {
+    overflow: hidden;
+}
+
 
 /******************************/
 /*      USER STYLES      */
@@ -19,17 +30,6 @@ ul.messages {
 /******************************/
 /*      MESSAGING STYLES      */
 /******************************/
-#conversation-list, #messages-list {
-    height: 450px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-}
-
-#conversation-list:hover body, #messages-list:hover body {
-    overflow: hidden;
-}
-
 .unread-message-icon {
     position: absolute;
     right: 0;
@@ -52,23 +52,8 @@ ul.messages {
 /******************************/
 /*      MISSION STYLES        */
 /******************************/
-.missions-list, .mission-applicants-list {
-    height: 450px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-}
-
-.mission-applicants-list {
+#mission-applicants-list {
     height: 250px;
-}
-
-.missions-list:hover body, .mission-applicants-list:hover body {
-    overflow: hidden;
-}
-
-.mission-details-container, .mission-applicants-container {
-    width: 75%;
 }
 
 .active-filter {

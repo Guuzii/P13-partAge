@@ -17,8 +17,8 @@ from mission.models.mission import Mission
 from mission.models.mission_bonus_reward import MissionBonusReward
 
 from messaging.forms import UserMessageForm
-
 from messaging.models.message import UserMessage
+
 from user.models.user_type import UserType
 from user.models.custom_user import CustomUser
 

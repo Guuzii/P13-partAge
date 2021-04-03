@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'user',
     'messaging',
     'mission',
+    'shopping',
 ]
 
 AUTH_USER_MODEL = 'user.CustomUser'

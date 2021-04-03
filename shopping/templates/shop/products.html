@@ -1,0 +1,38 @@
+<!-- MISSIONS BOARD SENIOR -->
+
+{% extends 'shop/index.html' %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>Sous-titre shopping</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <ul class="nav nav-pills justify-content-center align-items-center">
+                <li class="active-filter btn mx-1 btn-light" status-name="open">Produits</li>
+                <li class="btn mx-1 btn-light" status-name="ongoing">Historique</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="list-container w-100 list-group align-items-center py-3 border rounded bg-light {% if not products %}justify-content-center{% endif %}">
+            {% if products %}
+                {% for product in products %}
+                    <div class="row justify-content-between mb-2 w-75 list-group-item-action border-bottom">
+                        <div class="col-md-6 d-flex align-items-center">
+                            {{ product.label }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucuns articles disponibles</p>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock section_content %}

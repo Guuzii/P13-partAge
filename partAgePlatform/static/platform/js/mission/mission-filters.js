@@ -46,13 +46,13 @@ const updateMissionsList = (missions) => {
             missionListHtml.push(divMissionBloc);
         });
 
-        if ($('.missions-list').hasClass('justify-content-center')) {
-            $('.missions-list').removeClass('justify-content-center');
+        if ($('#missions-list').hasClass('justify-content-center')) {
+            $('#missions-list').removeClass('justify-content-center');
         }
-        $('.missions-list').empty();
+        $('#missions-list').empty();
 
         missionListHtml.forEach((missionBloc) => {            
-            $('.missions-list').append(missionBloc);
+            $('#missions-list').append(missionBloc);
         });
     }
     else {
@@ -60,11 +60,11 @@ const updateMissionsList = (missions) => {
         let emptyMissionBloc = $('<p></p>');
         emptyMissionBloc.text("Aucunes Missions")
         
-        if (!$('.missions-list').hasClass('justify-content-center')) {
-            $('.missions-list').addClass('justify-content-center');
+        if (!$('#missions-list').hasClass('justify-content-center')) {
+            $('#missions-list').addClass('justify-content-center');
         }
-        $('.missions-list').empty();
-        $('.missions-list').append(emptyMissionBloc);
+        $('#missions-list').empty();
+        $('#missions-list').append(emptyMissionBloc);
     }
 }
 
