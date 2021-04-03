@@ -7,6 +7,9 @@ class Product(models.Model):
         verbose_name=_('Product label'),
         max_length=50
     )
+    description = models.TextField(
+        verbose_name=_('Product description'),
+    )
     price = models.SmallIntegerField(
         verbose_name=_('Product price')
     )
@@ -17,6 +20,7 @@ class Product(models.Model):
     path_to_sprite = models.CharField(
         verbose_name=_('Product path to sprite'),
         max_length=150,
+        blank=True,
         null=True
     )
     is_multiple = models.BooleanField(

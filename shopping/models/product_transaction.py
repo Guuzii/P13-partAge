@@ -7,7 +7,7 @@ class ProductTransaction(models.Model):
     user = models.ForeignKey('user.CustomUser', on_delete=models.CASCADE)
     product = models.ForeignKey('shopping.Product', on_delete=models.PROTECT)
     created_at = models.DateTimeField(
-        verbose_name=_('Mission creation date'),
+        verbose_name=_('Transaction creation date'),
         default=now
     )
 
