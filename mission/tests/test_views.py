@@ -495,8 +495,17 @@ class MissionManagementTestCase(TestCase):
             category=self.test_mission_category,
             bonus_reward=self.test_mission_bonus_reward,
             title="title test mission2",
-            description="description test mission2",
-            acceptor_validate=True
+            description="description test mission2"
+        )
+        self.test_mission3 = Mission.objects.create(
+            bearer_user=self.test_user_senior,
+            acceptor_user=self.test_user_junior,
+            status=self.test_mission_status_ongoing,
+            category=self.test_mission_category,
+            bonus_reward=self.test_mission_bonus_reward,
+            title="title test mission3",
+            description="description test mission3",
+            bearer_validate=True,
         )
 
     def test_mission_management_accept_user_post(self):
@@ -512,8 +521,9 @@ class MissionManagementTestCase(TestCase):
         self.assertTemplateUsed(template_name="mission/details.html")
 
         # Test data changes on mission
-        # self.assertEqual(self.test_mission.acceptor_user, self.test_user_junior)
-        # self.assertEqual(self.test_mission.status, self.test_mission_status_ongoing)
+        self.test_mission = Mission.objects.get(pk=self.test_mission.pk)
+        self.assertEqual(self.test_mission.acceptor_user, self.test_user_junior)
+        self.assertEqual(self.test_mission.status, self.test_mission_status_ongoing)
         
         # Test messages not empty and messages content
         messages = list(get_messages(response.wsgi_request))
@@ -524,27 +534,6 @@ class MissionManagementTestCase(TestCase):
         ) 
 
     def test_mission_management_validate_mission_post(self):
-        uidb64_junior = urlsafe_base64_encode(force_bytes(self.test_user_junior.pk)) + "-" + urlsafe_base64_encode(force_bytes(self.test_mission.pk))
-        post_args = {
-            'action': "end"
-        }
-        self.client.login(username="senior@test.fr", password="test123+")
-        response = self.client.post(reverse('mission-manage', args=[uidb64_junior,]), post_args)
-
-        # Test status_code/redirection and template used
-        self.assertRedirects(response=response, expected_url=reverse('mission-details', args=[urlsafe_base64_encode(force_bytes(self.test_mission.pk))]))
-        self.assertTemplateUsed(template_name="mission/details.html")
-
-        # Test data changes on mission
-        # self.assertTrue(self.test_mission.bearer_validate) 
-
-    def test_mission_management_end_mission_post(self):
-        junior_wallet = Wallet.objects.create(
-            balance=0
-        )
-        self.test_user_junior.wallet = junior_wallet
-        self.test_user_junior.save()
-        
         uidb64_junior = urlsafe_base64_encode(force_bytes(self.test_user_junior.pk)) + "-" + urlsafe_base64_encode(force_bytes(self.test_mission2.pk))
         post_args = {
             'action': "end"
@@ -557,8 +546,35 @@ class MissionManagementTestCase(TestCase):
         self.assertTemplateUsed(template_name="mission/details.html")
 
         # Test data changes on mission
-        # self.assertTrue(self.test_mission2.acceptor_validate)
-        # self.assertEqual(self.test_mission2.status, self.test_mission_status_finish)
+        updated_mission = Mission.objects.get(pk=self.test_mission2.pk)
+        self.assertTrue(updated_mission.bearer_validate) 
+
+    def test_mission_management_end_mission_post(self):
+        junior_wallet = Wallet.objects.create(
+            balance=0
+        )
+        self.test_user_junior.wallet = junior_wallet
+        self.test_user_junior.save()
+        
+        uidb64_senior = urlsafe_base64_encode(force_bytes(self.test_user_senior.pk)) + "-" + urlsafe_base64_encode(force_bytes(self.test_mission3.pk))
+        post_args = {
+            'action': "end"
+        }
+        self.client.login(username="junior@test.fr", password="test123+")
+        response = self.client.post(reverse('mission-manage', args=[uidb64_senior,]), post_args)
+
+        # Test status_code/redirection and template used
+        self.assertRedirects(response=response, expected_url=reverse('mission-details', args=[urlsafe_base64_encode(force_bytes(self.test_mission3.pk))]))
+        self.assertTemplateUsed(template_name="mission/details.html")
+
+        # Test data changes on mission
+        # print(self.test_mission.pk)
+        # print(self.test_mission2.pk)
+        # print(self.test_mission3.pk)
+        # updated_mission = Mission.objects.get(pk=self.test_mission3.pk)
+        # self.assertTrue(self.test_mission3.acceptor_validate)
+        # self.assertEqual(self.test_mission3.status, self.test_mission_status_finish)
+        # self.test_user_junior = Mission.objects.get(pk=self.test_user_junior.pk)
         # self.assertTrue(self.test_user_junior.wallet.balance > 0)
         # self.assertTrue(self.test_user_junior.experience_point > 0)
 

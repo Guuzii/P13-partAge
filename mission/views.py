@@ -37,7 +37,7 @@ def get_mission_by_uid(uidb64):
             mission = Mission.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError, Mission.DoesNotExist):
             mission = None
-
+            
     return mission
 
 def get_acceptor_user_by_uid(uidb64):

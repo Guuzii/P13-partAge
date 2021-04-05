@@ -22,7 +22,7 @@ class ShoppingProducts(View):
     def get(self, request):
         senior_type = UserType.objects.get(label__iexact="senior")
 
-        if (request.user.user_type != senior_type):
+        if (request.user.user_type == senior_type):
             messages.error(
                 request, 
                 message=_("Vous devez être un utilisateur de type Junior pour accéder à la boutique"),
