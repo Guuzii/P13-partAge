@@ -12,6 +12,7 @@ class ProductTransaction(models.Model):
     )
 
     class Meta:
+        db_table  = 'shopping_product_transaction'
         verbose_name = _('Product transaction')
         verbose_name_plural = _('Product transactions')
 

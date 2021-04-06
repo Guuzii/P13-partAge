@@ -198,8 +198,7 @@ class MessageConversation(View):
                         message=_("Vous avez postulez !"),
                         extra_tags="alert-success"
                     )
-                    url = reverse('mission-board')
-                    return HttpResponse(url)
+                    return HttpResponse(reverse('mission-board'))
                 else:
                     new_message_json = serializers.serialize('json', (new_message,))
                     return HttpResponse(new_message_json, content_type='application/json')

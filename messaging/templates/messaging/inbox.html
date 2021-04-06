@@ -13,10 +13,10 @@
     <br/>
 
     <div class="container">        
-        <div class="list-container w-100 list-group align-items-center pt-2 pb-2 border rounded bg-light {% if not related_users %}justify-content-center{% endif %}">
+        <div class="list-container w-100 list-group align-items-center py-2 border rounded bg-light {% if not related_users %}justify-content-center{% endif %}">
             {% if related_users %}
                 {% for obj in related_users %}
-                    <div class="row justify-content-between mb-2 w-75 list-group-item-action border-bottom">
+                    <div class="row justify-content-between w-75 list-group-item-action border-bottom py-2">
                         <div class="col-md-6 d-flex align-items-center">
                             <div>                                
                                 <div>

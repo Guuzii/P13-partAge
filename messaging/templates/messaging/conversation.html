@@ -27,7 +27,7 @@
     <br/>
 
     <div class="container">
-        <div id="messages-list" class="list-container list-group border rounded bg-light pt-2 pb-2">
+        <div id="messages-list" class="list-container list-group border rounded bg-light py-2">
             {% for message in conversation_messages %}
                 <div class="message-box container position-relative mb-2 {% if message.sender_user == related_user %}align-self-start ml-2{% else %}align-self-end mr-2 bg-secondary{% endif %}">
                     <div class="row mt-2 mb-2">
@@ -39,7 +39,7 @@
                     <div class="row mt-2">
                         <div class="col-md-12 {% if message.sender_user == related_user %}text-right{% endif %}">
                             <small class="text-muted">
-                                {% if message.status.label == 'created' %}Envoyé{% else %}Modifié{% endif %} le {{ message.created_at|date:'d-m-Y H:i:s' }} par <span class="font-weight-bold">{{ message.sender_user.first_name }} {{ message.sender_user.last_name }}</span>
+                                {% if message.status.label == 'created' %}Envoyé{% else %}Modifié{% endif %} le {{ message.created_at|date:'d-m-Y' }} à {{ message.created_at|date:'H:i:s' }} par <span class="font-weight-bold">{{ message.sender_user.first_name }} {{ message.sender_user.last_name }}</span>
                             </small>
                         </div>
                     </div>

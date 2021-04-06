@@ -1,0 +1,66 @@
+<!-- SHOPPING PRODUCTS -->
+
+{% extends 'shopping/index.html' %}
+
+{% load static %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>Sous-titre shopping</h3>
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated and junior %}
+        <div class="row">
+            <div class="col-md-12 text-center mb-2">
+                <ul class="nav nav-pills justify-content-center align-items-center">
+                    <li class="shopping-tab btn mx-1 btn-light active-filter" tab-data="default">Produits</li>
+                    <li class="shopping-tab btn mx-1 btn-light" tab-data="history">Historique achats</li>
+                </ul>
+                <div class="mt-2">
+                    <span class="font-weight-bold">Ressources disponibles : </span><span id="user-balance">{{ request.user.wallet.balance }}</span> po
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="container">
+        <div class="list-container w-100 list-group align-items-center py-3 border rounded bg-light {% if not products %}justify-content-center{% endif %}">
+            {% if products %}
+                {% for product in products %}
+                    <div class="product row w-100 list-group-item-action border-bottom py-2">
+                        <div class="col-md-4 d-flex justify-content-center align-items-center">
+                            <img class="w-50" src="{% if product.path_to_sprite %}{% static product.path_to_sprite %}{% else %}{% static 'platform/assets/img/default.png' %}{% endif %}" alt="product image">
+                        </div>
+                        <div class="col-md-8 d-flex justify-content-between align-items-center">
+                            <div class="font-weight-bold">
+                                {{ product.label }}
+                            </div>
+                            {% if request.user.is_authenticated and junior %}
+                                <div class="product-action-bloc d-flex align-items-center">
+                                    <div class="font-weight-bold mr-3">
+                                        Prix : 
+                                        <span class="product-price {% if request.user.wallet.balance < product.price %}text-danger{% else %}text-success{% endif %}">{{ product.price }} po</span>
+                                    </div>
+                                    <form class="buy-product-form" action="{% url 'shopping-products-buy' product_pk=product.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="accept">
+                                        <input class="btn btn-success btn-outline mx-1 {% if request.user.wallet.balance < product.price %}btn-danger{% else %}btn-success{% endif %}" type="submit" value="Acheter"/>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucuns articles disponibles</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Shopping  javascript -->
+    <script type="text/javascript" src="{% static 'platform/js/shopping/product-buy.js' %}"></script>
+
+{% endblock section_content %}

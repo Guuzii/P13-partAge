@@ -17,7 +17,7 @@
         <div id="mission-applicants-list" class="list-container w-100 list-group align-items-center py-3 border rounded {% if not applicants %}justify-content-center{% endif %}">
             {% if applicants %}
                 {% for obj in applicants %}
-                    <div class="row justify-content-between mb-2 w-75 list-group-item-action border-bottom">
+                    <div class="row justify-content-between w-75 list-group-item-action border-bottom py-2">
                         <div class="col-md-6 d-flex align-items-center">
                             {{ obj.user.first_name }} {{ obj.user.last_name }}
                         </div>
@@ -32,7 +32,7 @@
                                 <form action="{% url 'mission-manage' uidb64=obj.uid %}" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="accept">
-                                    <input class="btn btn-success btn-outline mx-1" type="submit" name="upvote" value="Accepter"/>
+                                    <input class="btn btn-success btn-outline mx-1" type="submit" value="Accepter"/>
                                 </form>
                             {% endif %}
                         </div>

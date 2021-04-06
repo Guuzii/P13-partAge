@@ -1,4 +1,4 @@
-<!-- MISSIONS BOARD SENIOR -->
+<!-- MISSIONS BOARD -->
 
 {% extends 'mission/index.html' %}
 
@@ -27,7 +27,7 @@
         <div id="missions-list" class="list-container w-100 list-group align-items-center py-3 border rounded bg-light {% if not missions %}justify-content-center{% endif %}">
             {% if missions %}
                 {% for obj in missions %}
-                    <div class="row justify-content-between mb-2 w-75 list-group-item-action border-bottom">
+                    <div class="row justify-content-between w-75 list-group-item-action border-bottom py-2">
                         <div class="col-md-6 d-flex align-items-center">
                             {{ obj.mission.title }}
                         </div>

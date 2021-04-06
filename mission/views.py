@@ -237,14 +237,6 @@ class MissionCreate(View):
     def get(self, request):
         senior_type = UserType.objects.get(label__iexact="senior")
         if(request.user.user_type == senior_type):
-            # if (request.GET.get('category_info')):
-            #     mission_categories = MissionCategory.objects.all()
-            #     categories_with_amount = []
-            #     for category in mission_categories:
-            #         categories_with_amount.append({
-            #             'mission': serializers.serialize('json', (mission,)),
-            #             'uid': urlsafe_base64_encode(force_bytes(mission.pk))
-            #         })
             self.context['form'] = CreateMissionForm(user=request.user)
             return render(request, self.template_name, self.context)
         else:
