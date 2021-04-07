@@ -84,20 +84,26 @@ const updateShopList = (shopList) => {
             divProductBloc.append(divProductImgBloc)
 
             // Create product infos bloc           
-            let productInfosBlocClass = "col-md-8 d-flex justify-content-between align-items-center";
+            let productInfosBlocClass = "product-infos-bloc col-md-8 d-flex justify-content-between align-items-center";
             let productInfosBloc = $('<div></div>');
             productInfosBloc.addClass(productInfosBlocClass);
 
             // Create product label bloc
             let productLabelBloc = $('<div></div>');
-            productLabelBloc.addClass("font-weight-bold");
+            productLabelBloc.addClass("product-infos font-weight-bold");
             productLabelBloc.text(element.transaction ? element.product.fields.label : element.fields.label)
 
+            // Create product description bloc
+            let productDescriptionBloc = $('<small></small>');
+            productDescriptionBloc.text(element.transaction ? element.product.fields.description : element.fields.description)
+
+            productLabelBloc.append($('<br>'));
+            productLabelBloc.append(productDescriptionBloc);
             productInfosBloc.append(productLabelBloc);
 
             // Create product buy/transaction bloc
             let productBuyBloc = $('<div></div>');
-            productBuyBloc.addClass("d-flex align-items-center");
+            productBuyBloc.addClass("product-buy d-flex align-items-center");
 
             if (element.transaction) {
                 productBuyBloc.addClass("flex-column");
@@ -138,7 +144,7 @@ const updateShopList = (shopList) => {
                 // Create product price bloc
                 let productPriceBloc = $('<div></div>');
                 productPriceBloc.addClass("font-weight-bold mr-3");
-                productPriceBloc.text("Prix :")
+                productPriceBloc.text("Prix : ")
 
                 //Create product price span
                 let productPriceSpanClass = "product-price";

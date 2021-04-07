@@ -34,13 +34,15 @@
                         <div class="col-md-4 d-flex justify-content-center align-items-center">
                             <img class="w-50" src="{% if product.path_to_sprite %}{% static product.path_to_sprite %}{% else %}{% static 'platform/assets/img/default.png' %}{% endif %}" alt="Image du produit">
                         </div>
-                        <div class="col-md-8 d-flex justify-content-between align-items-center">
-                            <div class="font-weight-bold">
+                        <div class="product-infos-bloc col-md-8 d-flex justify-content-between align-items-center">
+                            <div class="product-infos font-weight-bold my-2">
                                 {{ product.label }}
+                                <br>
+                                <small>{{ product.description }}</small>
                             </div>
                             {% if request.user.is_authenticated and junior %}
-                                <div class="d-flex align-items-center">
-                                    <div class="font-weight-bold mr-3">
+                                <div class="product-buy d-flex align-items-center">
+                                    <div class="font-weight-bold mr-3 mb-2">
                                         Prix : 
                                         <span class="product-price {% if request.user.wallet.balance < product.price %}text-danger{% else %}text-success{% endif %}">{{ product.price }} po</span>
                                     </div>

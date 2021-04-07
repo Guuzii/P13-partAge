@@ -70,10 +70,29 @@ ul.messages {
     z-index: 1000;
 }
 
+.product-infos {
+    max-width: 350px;
+}
+
+.product-buy {
+    max-width: 250px;
+}
+
 
 /******************************/
 /*        RESPONSIVE          */
 /******************************/
+@media (max-width: 1199px) {
+    /***** SHOPPING *****/
+    .product-buy {
+        flex-direction: column;
+    }
+    
+    .product-buy > div {
+        margin-right: 0 !important;
+    }
+}
+
 @media (max-width: 991px) {
     /***** USER *****/
     #btn-profile-dc, #btn-profile-pwd {
@@ -81,7 +100,7 @@ ul.messages {
     }
 }
 
-@media (max-width: 719px) {
+@media (max-width: 767px) {
     /***** USER *****/
     .profile-label {
         text-align: left !important;
@@ -99,6 +118,16 @@ ul.messages {
     /***** MISSION *****/
     .mission-details-container {
         width: 90%;
+    }
+
+    /***** SHOPPING *****/
+    .product-infos-bloc {
+        flex-direction: column;
+    }
+
+    .product-infos {
+        margin-top: .5rem;
+        margin-bottom: .5rem;
     }
 }
 
