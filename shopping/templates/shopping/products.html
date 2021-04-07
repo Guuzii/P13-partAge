@@ -27,27 +27,26 @@
     {% endif %}
 
     <div class="container">
-        <div class="list-container w-100 list-group align-items-center py-3 border rounded bg-light {% if not products %}justify-content-center{% endif %}">
+        <div id="products-list" class="list-container w-100 list-group align-items-center py-3 border rounded bg-light {% if not products %}justify-content-center{% endif %}">
             {% if products %}
                 {% for product in products %}
                     <div class="product row w-100 list-group-item-action border-bottom py-2">
                         <div class="col-md-4 d-flex justify-content-center align-items-center">
-                            <img class="w-50" src="{% if product.path_to_sprite %}{% static product.path_to_sprite %}{% else %}{% static 'platform/assets/img/default.png' %}{% endif %}" alt="product image">
+                            <img class="w-50" src="{% if product.path_to_sprite %}{% static product.path_to_sprite %}{% else %}{% static 'platform/assets/img/default.png' %}{% endif %}" alt="Image du produit">
                         </div>
                         <div class="col-md-8 d-flex justify-content-between align-items-center">
                             <div class="font-weight-bold">
                                 {{ product.label }}
                             </div>
                             {% if request.user.is_authenticated and junior %}
-                                <div class="product-action-bloc d-flex align-items-center">
+                                <div class="d-flex align-items-center">
                                     <div class="font-weight-bold mr-3">
                                         Prix : 
                                         <span class="product-price {% if request.user.wallet.balance < product.price %}text-danger{% else %}text-success{% endif %}">{{ product.price }} po</span>
                                     </div>
                                     <form class="buy-product-form" action="{% url 'shopping-products-buy' product_pk=product.pk %}" method="post">
                                         {% csrf_token %}
-                                        <input type="hidden" name="action" value="accept">
-                                        <input class="btn btn-success btn-outline mx-1 {% if request.user.wallet.balance < product.price %}btn-danger{% else %}btn-success{% endif %}" type="submit" value="Acheter"/>
+                                        <input class="btn btn-outline mx-1 {% if request.user.wallet.balance < product.price %}btn-danger{% else %}btn-success{% endif %}" type="submit" value="Acheter"/>
                                     </form>
                                 </div>
                             {% endif %}

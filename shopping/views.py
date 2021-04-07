@@ -8,6 +8,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 from django.utils.timezone import now
+from django.middleware.csrf import get_token
 
 from shopping.models.product_transaction import ProductTransaction
 from shopping.models.product import Product
@@ -26,8 +27,14 @@ class ShoppingProducts(View):
         junior_type = UserType.objects.get(label__iexact="junior")
 
         if (request.user.is_authenticated and request.user.user_type == junior_type):
+            if (request.GET.get('csrf')):
+                return JsonResponse(get_token(request), safe=False)
+
+            if (request.GET.get('balance')):
+                return JsonResponse(request.user.wallet.balance, safe=False)
+
             if (request.GET.get('history')):
-                user_transactions = ProductTransaction.objects.filter(user=request.user)
+                user_transactions = ProductTransaction.objects.filter(user=request.user).order_by("-created_at")
                 user_transactions_with_products = []
 
                 for transaction in user_transactions:
