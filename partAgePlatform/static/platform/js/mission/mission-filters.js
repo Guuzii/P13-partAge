@@ -1,19 +1,3 @@
-const getMissionsWithStatus = (statusName) => {
-    $.ajax({
-        type: "GET",
-        url: $(location).attr('href') + '?status=' + statusName,
-        success: (response) => {
-            response.forEach(element => {
-                element.mission = JSON.parse(element.mission);
-            });
-            updateMissionsList(response);
-        },
-        error: (error) => {
-            console.log(error.message);
-        }
-    });
-}
-
 const updateMissionsList = (missions) => {
     if (missions.length > 0) {
         let missionListHtml = [];
@@ -28,13 +12,25 @@ const updateMissionsList = (missions) => {
             divMissionBloc.addClass(missionBlocClass);
 
             // Create mission title bloc
-            let missionTitleBlocClass = "col-md-6 d-flex align-items-center";
+            let missionTitleBlocClass = "col-md-6 d-flex flex-column font-weight-bold";
             let divMissionTitleBloc = $('<div></div>');
             divMissionTitleBloc.addClass(missionTitleBlocClass);
-            divMissionTitleBloc.text(mission.fields.title);
+            divMissionTitleBloc.text(element.mission.fields.title);
+
+            // Create mission category bloc
+            let divMissionCategoryBloc = $('<small></small>');
+            divMissionCategoryBloc.text("Catégorie : " + element.category.fields.label);
+
+            // Create mission category bloc
+            let divMissionRewardBloc = $('<small></small>');
+            let totalRewardAmount = parseInt(element.category.fields.base_reward_amount) + parseInt(element.bonus_reward.fields.reward_amount);
+            divMissionRewardBloc.text("Récompenses : " + element.category.fields.xp_amount + " xp et " + totalRewardAmount + " po");
+
+            divMissionTitleBloc.append(divMissionCategoryBloc);
+            divMissionTitleBloc.append(divMissionRewardBloc);
 
             // Create mission details button            
-            let missionDetailsBtnClass = "col-md-2 btn btn-secondary btn-outline mx-1";
+            let missionDetailsBtnClass = "col-md-2 btn btn-secondary mx-1 my-auto";
             let missionDetailsBtnBloc = $('<a></a>');
             let btnHref = "/mission/details/" + uid + "/";
             missionDetailsBtnBloc.attr('href', btnHref);
@@ -68,6 +64,24 @@ const updateMissionsList = (missions) => {
     }
 }
 
+const getMissionsWithStatus = (statusName) => {
+    $.ajax({
+        type: "GET",
+        url: $(location).attr('href') + '?status=' + statusName,
+        success: (response) => {
+            response.forEach(element => {
+                element.mission = JSON.parse(element.mission)[0];
+                element.category = JSON.parse(element.category)[0];
+                element.bonus_reward = JSON.parse(element.bonus_reward)[0];
+            });
+            console.log(response);
+            updateMissionsList(response);
+        },
+        error: (error) => {
+            console.log(error.message);
+        }
+    });
+}
 
 $(document).ready(() => {
     let selectedFilter;

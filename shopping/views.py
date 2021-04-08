@@ -20,7 +20,7 @@ from user.models.custom_user import CustomUser
 class ShoppingProducts(View):
     template_name = 'shopping/products.html'
     context = {
-        'title': _("TITRE SHOPPING PRODUITS"),
+        'title': _("PRODUITS"),
     }    
 
     def get(self, request):

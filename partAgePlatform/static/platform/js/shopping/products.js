@@ -274,9 +274,13 @@ $(document).ready(() => {
             $(e.target).addClass('active-filter');
 
             if (selectedTab == "default") {
+                $('h2').text("PRODUITS");
+                $('h3').text("Liste des produits disponibles");
                 getProductsList();
             }
             else {
+                $('h2').text("TRANSACTIONS");
+                $('h3').text("Liste des transactions effectuées");
                 getUserTransactions();
             }
         }

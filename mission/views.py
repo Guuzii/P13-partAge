@@ -95,6 +95,8 @@ class MissionBoard(View):
             for mission in missions:
                 missions_with_uid.append({
                     'mission': serializers.serialize('json', (mission,)),
+                    'category': serializers.serialize('json', (mission.category,)),
+                    'bonus_reward': serializers.serialize('json', (mission.bonus_reward,)),
                     'uid': urlsafe_base64_encode(force_bytes(mission.pk))
                 })
 

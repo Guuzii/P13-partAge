@@ -28,11 +28,13 @@
             {% if missions %}
                 {% for obj in missions %}
                     <div class="row justify-content-between w-75 list-group-item-action border-bottom py-2">
-                        <div class="col-md-6 d-flex align-items-center">
+                        <div class="col-md-6 d-flex flex-column font-weight-bold">
                             {{ obj.mission.title }}
+                            <small>Catégorie : {{ obj.mission.category.label }}</small>
+                            <small>Récompenses : {{ obj.mission.category.xp_amount }} xp  et {{ obj.mission.category.base_reward_amount|add:obj.mission.bonus_reward.reward_amount }} po</small>
                         </div>
 
-                        <a class="col-md-2 btn btn-secondary btn-outline mx-1" href="{% url 'mission-details' uidb64=obj.uid %}">
+                        <a class="col-md-2 btn btn-secondary mx-1 my-auto" href="{% url 'mission-details' uidb64=obj.uid %}">
                             détails
                         </a>
                     </div>
@@ -44,7 +46,7 @@
 
         {% if senior %}
             <div class="row mt-2 justify-content-end">
-                <a class="col-md-2 btn btn-primary btn-outline mx-1" href="{% url 'mission-create' %}">
+                <a class="col-md-2 btn btn-primary mx-1" href="{% url 'mission-create' %}">
                     Créer une mission
                 </a>
             </div>

@@ -129,6 +129,10 @@ ul.messages {
         margin-top: .5rem;
         margin-bottom: .5rem;
     }
+
+    .product-buy > div {
+        margin-bottom: 0.5rem;
+    }
 }
 
 @media (max-width: 575px) {
