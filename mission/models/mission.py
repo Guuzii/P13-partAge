@@ -15,6 +15,7 @@ class Mission(models.Model):
     )
     updated_at = models.DateTimeField(
         verbose_name=_('Mission update date'),
+        default=now,
         null=True
     )
     title = models.CharField(

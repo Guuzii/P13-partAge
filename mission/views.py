@@ -17,8 +17,8 @@ from mission.models.mission import Mission
 from mission.models.mission_bonus_reward import MissionBonusReward
 
 from messaging.forms import UserMessageForm
-
 from messaging.models.message import UserMessage
+
 from user.models.user_type import UserType
 from user.models.custom_user import CustomUser
 
@@ -37,7 +37,7 @@ def get_mission_by_uid(uidb64):
             mission = Mission.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError, Mission.DoesNotExist):
             mission = None
-
+            
     return mission
 
 def get_acceptor_user_by_uid(uidb64):
@@ -95,6 +95,8 @@ class MissionBoard(View):
             for mission in missions:
                 missions_with_uid.append({
                     'mission': serializers.serialize('json', (mission,)),
+                    'category': serializers.serialize('json', (mission.category,)),
+                    'bonus_reward': serializers.serialize('json', (mission.bonus_reward,)),
                     'uid': urlsafe_base64_encode(force_bytes(mission.pk))
                 })
 
@@ -237,14 +239,6 @@ class MissionCreate(View):
     def get(self, request):
         senior_type = UserType.objects.get(label__iexact="senior")
         if(request.user.user_type == senior_type):
-            # if (request.GET.get('category_info')):
-            #     mission_categories = MissionCategory.objects.all()
-            #     categories_with_amount = []
-            #     for category in mission_categories:
-            #         categories_with_amount.append({
-            #             'mission': serializers.serialize('json', (mission,)),
-            #             'uid': urlsafe_base64_encode(force_bytes(mission.pk))
-            #         })
             self.context['form'] = CreateMissionForm(user=request.user)
             return render(request, self.template_name, self.context)
         else:
