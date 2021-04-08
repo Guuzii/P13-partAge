@@ -6,6 +6,7 @@ branches:
   - user
   - messaging
   - mission
+  - shopping
   - dev
 before_script:
   - pip install -r requirements.txt

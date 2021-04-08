@@ -1,5 +1,6 @@
 from django.core import serializers
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.urls import reverse
 from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
@@ -101,5 +102,5 @@ class ShoppingProducts(View):
                 message=_("Vous devez être authentifié et avoir un type utilisateur = Junior pour acheter un produit de la boutique"),
                 extra_tags="alert-danger"
             )            
-            return HttpResponse(reverse('shop'), status=403)
+            return HttpResponse(reverse('shopping-products'), status=403)
 

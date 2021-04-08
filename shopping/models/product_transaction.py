@@ -17,4 +17,4 @@ class ProductTransaction(models.Model):
         verbose_name_plural = _('Product transactions')
 
     def __str__(self):
-        return self.product
+        return self.product.label

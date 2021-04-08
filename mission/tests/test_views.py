@@ -105,6 +105,8 @@ class MissionBoardTestCase(TestCase):
         # Test Json response content
         missions_json = [{
             'mission': serializers.serialize('json', (self.test_mission2,)),
+            'category': serializers.serialize('json', (self.test_mission2.category,)),
+            'bonus_reward': serializers.serialize('json', (self.test_mission2.bonus_reward,)),
             'uid': urlsafe_base64_encode(force_bytes(self.test_mission2.pk))
         }]
         self.assertJSONEqual(response.content.decode('utf8'), missions_json)
