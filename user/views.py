@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.template.loader import render_to_string
 from django.views import View
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
@@ -31,6 +31,9 @@ from user.models.document import Document
 from user.models.document_type import DocumentType
 
 from user.tokens import account_activation_token, password_reset_token
+
+from mission.models.mission import Mission
+from mission.models.mission_status import MissionStatus
 
 
 def handle_uploaded_file(file, filename):
@@ -96,8 +99,20 @@ class UserProfile(View):
     }
 
     def get(self, request):
-        self.context['wallet_balance'] = 0 if request.user.wallet is None else request.user.wallet.balance
-        return render(request, self.template_name, self.context)
+        if (request.GET.get('statsnum')):
+            mission_status_finish = MissionStatus.objects.get(label="finish")
+            stats_json = {
+                'user_count': CustomUser.objects.exclude(is_superuser=True).count(),
+                'mission_count': Mission.objects.all().count(),
+                'mission_end_count': Mission.objects.filter(status=mission_status_finish).count()
+            }
+            return JsonResponse(stats_json, safe=False)
+
+        if (request.user.is_authenticated):
+            self.context['wallet_balance'] = 0 if request.user.wallet is None else request.user.wallet.balance
+            return render(request, self.template_name, self.context)
+        else:
+            return redirect('login')
 
 
 class UserRegister(View):

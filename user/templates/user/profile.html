@@ -30,6 +30,10 @@
             <div class="profile-value col-md-6">{{ request.user.birthdate }}</div>
         </div>
         <div class="row mb-2">
+            <div class="profile-label col-md-6 text-right">Type d'utilisateur :</div>
+            <div class="profile-value col-md-6">{{ request.user.user_type.label }}</div>
+        </div>
+        <div class="row mb-2">
             <div class="profile-label col-md-6 text-right">Expérience :</div>
             <div class="profile-value col-md-6">{{ request.user.experience_point }} pts</div>
         </div>
