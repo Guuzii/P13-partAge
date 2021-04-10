@@ -61,6 +61,7 @@ class ShoppingProducts(View):
 
             self.context['products'] = products
         else:
+            self.context['junior'] = False
             products = Product.objects.all().order_by('price')
 
             self.context['products'] = products            
