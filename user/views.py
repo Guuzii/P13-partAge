@@ -47,12 +47,12 @@ def custom_send_email(request, user, subject, template, pwd=False):
     site = get_current_site(request)
     token = password_reset_token.make_token(user) if pwd else account_activation_token.make_token(user)
     protocol = "https" if request.is_secure else "http"
-    if "127.0.0.1" in site.domain or "localhost" in site.domain:
+    if  site.domain in ("127.0.0.1", "localhost", "174.138.15.127",):
         protocol = "http"
 
     content = render_to_string(template, {
         'user': user,
-        'protocol': protocol,
+        'protocol': "protocol",
         'domain': site.domain,
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
         'token': token

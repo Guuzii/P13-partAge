@@ -185,19 +185,6 @@ MISSION_CATEGORY = [
     },
 ]
 
-# ENUM
-class UserTypeEnum(object):
-    JUNIOR = "junior"
-    SENIOR = "senior"    
-USER_TYPE_ENUM = UserTypeEnum()
-
-class MissionStatusEnum(object):
-    CLOSE = "close"
-    OPEN = "open"
-    ONGOING = "ongoing"
-    FINISH = "finish"    
-MISSION_STATUS_ENUM = MissionStatusEnum()
-
 # User files upload
 USER_APP_BASEDIR = Path(__file__).resolve().parent.parent.parent / 'user/'
 USER_STATIC_UPLOAD_DIR = 'static/user/uploads/'
