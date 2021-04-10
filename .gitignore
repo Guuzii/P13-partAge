@@ -22,6 +22,7 @@ media
 *$py.class
 
 ### Project specific ###
+partAgePlatform/settings/production.py
 
 # C extensions
 *.so
