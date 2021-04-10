@@ -1,0 +1,60 @@
+<!-- MISSIONS BOARD -->
+
+{% extends 'mission/index.html' %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>{% if senior %}Liste des missions créées{% else %}Liste des missions{% endif %}</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <ul class="nav nav-pills justify-content-center align-items-center">
+                <li class="mission-status-filter btn mx-1 btn-light" status-name="open">Ouverte</li>
+                <li class="mission-status-filter btn mx-1 btn-light" status-name="ongoing">En cours</li>
+                <li class="mission-status-filter btn mx-1 btn-light" status-name="finish">Terminée</li>
+                {% if senior %}
+                    <li class="mission-status-filter btn mx-1 btn-light" status-name="close">En validation</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="missions-list" class="list-container w-100 list-group align-items-center py-3 border rounded bg-light {% if not missions %}justify-content-center{% endif %}">
+            {% if missions %}
+                {% for obj in missions %}
+                    <div class="row justify-content-between w-75 list-group-item-action border-bottom py-2">
+                        <div class="col-md-6 d-flex flex-column font-weight-bold">
+                            {{ obj.mission.title }}
+                            <small>Catégorie : {{ obj.mission.category.label }}</small>
+                            <small>Récompenses : {{ obj.mission.category.xp_amount }} xp  et {{ obj.mission.category.base_reward_amount|add:obj.mission.bonus_reward.reward_amount }} po</small>
+                        </div>
+
+                        <a class="col-md-2 btn btn-secondary mx-1 my-auto" href="{% url 'mission-details' uidb64=obj.uid %}">
+                            détails
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucunes Missions</p>
+            {% endif %}
+        </div>
+
+        {% if senior %}
+            <div class="row mt-2 justify-content-end">
+                <a class="col-md-2 btn btn-primary mx-1" href="{% url 'mission-create' %}">
+                    Créer une mission
+                </a>
+            </div>
+        {% endif %}
+    </div>    
+    
+    {% load static %}
+    <!-- Messaging conversation javascript -->
+    <script type="text/javascript" src="{% static 'platform/js/mission/mission-filters.js' %}"></script>
+
+{% endblock section_content %}

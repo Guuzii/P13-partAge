@@ -1,0 +1,39 @@
+<!-- MESSAGING FORM - SEND-MESSAGE -->
+
+{% if errors %}
+    <div style="color: red;">
+        {% for key, error in errors %}
+            {% autoescape off %}
+                {{ error }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% elif not errors and form.errors %}
+    <div style="color: red;">
+        {% autoescape off %}
+            {{ form.errors }}
+        {% endautoescape %}
+    </div>
+{% else %}    
+    <div class="form-errors" style="color: red;">
+    </div>
+{% endif %}
+
+<form id="{{ form_id }}" action="{% url form_action uidb64=uid %}" method="POST">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.help_text %}
+              <div class="form-text text-muted">
+                <small>{{ field.help_text }}</small>
+              </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    
+    <button type="submit" class="btn btn-primary">{{ submit_button_label }}</button>
+    <a class="btn btn-danger" href="{% url back_url_name %}">Retour</a>
+</form>

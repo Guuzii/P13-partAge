@@ -1,0 +1,3 @@
+# Specific user static files to exludes
+
+file_user_*.*

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="Plateforme de service et de mise en relation inter générationnel">
+        <meta name="author" content="Erwan MORIO">
+        <title>Part'Âge - plateforme de partage</title>
+        
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <!-- Core theme CSS (includes Bootstrap)-->
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'themes/freelancer-startboostrap/css/styles.css' %}">
+        <!-- Fonts CSS-->
+        <link rel="stylesheet" href="{% static 'themes/freelancer-startboostrap/css/heading.css' %}">
+        <link rel="stylesheet" href="{% static 'themes/freelancer-startboostrap/css/body.css' %}">        
+        <!-- App CSS -->
+        <link rel="stylesheet" href="{% static 'platform/css/styles.css' %}">
+
+        <!-- Bootstrap core JS-->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body id="page-top">
+
+        {% include 'platform/includes/navigation.html' %}
+
+        {% block content %}
+        {% endblock %}
+
+        {% include 'platform/includes/footer.html' %}         
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li 
+                    {% if message.tags %} 
+                        class=" alert {{ message.tags }}"
+                    {% else %}
+                        class="alert alert-info"
+                    {% endif %}>
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        
+        <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes)-->
+        <div class="scroll-to-top d-lg-none position-fixed"><a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top"><i class="fa fa-chevron-up"></i></a></div>
+        
+        <!-- Third party plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        <!-- Core theme JS-->
+        <script type="text/javascript" src="{% static 'themes/freelancer-startboostrap/js/scripts.js' %}"></script>
+        
+        <!-- Platform global JS-->
+        <script type="text/javascript" src="{% static 'platform/js/main.js' %}"></script>
+    </body>
+</html>

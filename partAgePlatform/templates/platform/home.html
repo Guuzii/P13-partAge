@@ -1,0 +1,440 @@
+{% extends 'platform/index.html' %}
+{% load static %}
+
+{% block content %}
+
+    {% include 'platform/includes/header.html' %}
+        
+    <section class="page-section portfolio" id="portfolio">
+        <div class="container">
+            <!-- Portfolio Section Heading-->
+            <div class="text-center">
+                <h2 class="page-section-heading text-secondary mb-0 d-inline-block">La plateforme</h2>
+            </div>
+            <!-- Icon Divider-->
+            <div class="divider-custom">
+                <div class="divider-custom-line"></div>
+                <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                <div class="divider-custom-line"></div>
+            </div>
+            
+            <div class="row flex-column justify-content-center align-items-center">
+                <div class="col-md-12">
+                    <div class="row justify-content-center text-justify mb-5">
+                        <div class="col-md-10">
+                            <p>
+                                Part'Âge est une plateforme collaborative de "service à la personne", 
+                                qui a été pensée et créée dans l'idée de permettre à des générations différentes de se rencontrer afin de pouvoir découvrir et/ou partager des activités ensembles.
+                            </p>
+                            <p>
+                                Ayant pour but de créer un lien social, la plateforme évite dans la mesure du possible d'avoir recours à des transactions en argent réel.
+                                Cependant sa particularité est qu'elle intégre un système de récompenses permettant d'obtenir des ressources internes à la plateforme, associées à des récompenses réelles définis par les porteurs de missions.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="home-odd row">
+                        <div class="col-md-8">
+                            <h4>Utilisateurs</h4>
+                            <p class="w-100">
+                                Pour pouvoir utiliser la plateforme, il est nécessaire de créer un profil utilisateur.
+                                <br>
+                                Il existe deux types d'utilisateurs :
+                            </p>
+                            <div class="d-flex justify-content-around w-100 mb-3">
+                                <div class="w-50 px-3">
+                                    <div class="font-weight-bold mb-1">Utilisateur "Junior" (moins de 55 ans)</div>
+                                    <div class="text-justify">
+                                        L'utilisateur junior correspond à l'aventurier sur la plateforme. Il peut :
+                                        <ul class="my-1">
+                                            <li>Consulter les missions disponibles</li>
+                                            <li>Consulter ses missions en cours et terminées</li>
+                                            <li>Postuler pour une mission</li>
+                                            <li>Echanger des messages avec les porteurs de missions</li>
+                                            <li>Recevoir des récompenses de mission</li>
+                                            <li>Acheter des articles de la boutique</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="vertical-separator"></div>
+                                <div class="w-50 px-3">
+                                    <div class="font-weight-bold mb-1">Utilisateur "Senior" (plus de 55 ans)</div>
+                                    <div class="text-justify">
+                                        L'utilisateur senior correspond au porteur de mission sur la plateforme. Il peut :
+                                        <ul class="my-1">
+                                            <li>Créer une mission</li>
+                                            <li>Consulter ses missions créées</li>
+                                            <li>Définir une récompense bonus pour une mission</li>
+                                            <li>Gérer ses postulants aux missions</li>
+                                            <li>Echanger des messages avec les postulants</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="w-100">
+                               Afin d'instaurer un climat de confiance entre nos utilisateurs, nous demandons à l'inscription une copie d'une pièce d'identité et de l'extrait de casier judiciaire n°3.
+                               <br>
+                               Chaques profils est par la suite vérifiés manuellement par un administrateur du site avant d'être activé. 
+                            </p>
+
+                            <a class="btn btn-primary mx-1" href="{% url 'register' %}">
+                                Créer un compte
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal0">
+                                <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                    <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+                                </div>
+                                <img class="img-fluid" src="{% static 'platform/assets/img/default.png' %}" alt="Avatar utilisateur"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="home-even row">
+                        <div class="col-md-8">
+                            <h4>Missions</h4>
+                            <div class="w-100 mb-2">
+                                Les utilisateurs Senior reçevrons réguliérement un montant d'or fixe, leur permettant de créer une ou plusieurs missions (en fonction de la catégorie), qui seront par la suite disponibles sur le tableau de missions des utilisateurs Junior. (Montant actuel : 1000 po / semaine)
+                                <br>
+                                Chaque missions créées est vérifiées par un administrateur du site avant d'être rendu disponible aux autres utilisateurs.                             
+                                <br>
+                                Une mission comportera un titre, une description, une catégorie et une récompense associée.
+                            </div>
+                            <p class="w-100">
+                               Les utilisateurs Junior pourront visualiser les missions disponibles et leurs détails. 
+                               Ils pourront ensuite choisir de postuler depuis le détail de mission en envoyant un message au porteur de mission.
+                               <br>
+                               Les utilisateurs Senior de leur cotés pourront selectionner un postulant aprés avoir échangé quelques messages avec lui, et ainsi déclencher l'activation de la mission.
+                            </p>
+                            <p class="w-100">
+                               Une fois la mission active, les deux utilisateurs concernés peuvent continuer à communiquer via la messagerie afin de se fixer un rendez-vous pour l'accomplissement de la mission.
+                            </p>
+                            <p class="w-100">
+                               Afin de terminer une mission, chaque utilisateurs va devoir aller valider la fin de mission en naviguant sur le détail de celle-ci.
+                               <br>
+                               L'envoi des récompenses sur la plateforme se déclenche à partir du moment ou les deux utilisateurs ont validé la fin de mission.
+                            </p>
+                        </div>
+                        <div class="col-md-4 justify-content-center align-items-center">
+                            <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal0">
+                                <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                    <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+                                </div><img class="img-fluid" src="{% static 'platform/assets/img/default.png' %}" alt="tableau de mission"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="home-odd row">
+                        <div class="col-md-8">
+                            <h4>Récompenses</h4>
+                            <div class="w-100 mb-2">
+                                Chaque missions auras une récompense associée qui sera composée de :
+                                <ul class="my-2">
+                                    <li>Un montant d'or et d'expérience en fonction de la catégorie de mission</li>
+                                    <li>Un montant d'or bonus défini par le porteur de mission</li>
+                                    <li>Une récompense bonus définie par le porteur de mission (optionnelle)</li>
+                                </ul>
+                            </div>
+                            <p class="w-100">
+                            La récompense bonus définie par le porteur de mission est au bon vouloir de celui-ci et totalement optionnelle.
+                            <br>
+                            Lorsque l'utilisateur choisit d'ajouter une récompense bonus, à lui de définir un petit quelque chose à offrir pour l'accomplissement de la mission (dans la mesure du possible pas d'argent réel et le cas écheant des sommes responsable).
+                            </p>
+                            <p class="w-100">
+                            <span class="font-weight-bold">L'or :</span> c'est une ressource pouvant être dépensée dans la boutique de la plateforme.
+                            <br>
+                            <span class="font-weight-bold">L'expérience :</span> c'est un score correspondant à votre expérience sur la plateforme.
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal0">
+                                <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                    <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+                                </div>
+                                <img class="img-fluid" src="{% static 'platform/assets/img/default.png' %}" alt="stand marchand"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="home-even row">
+                        <div class="col-md-8">
+                            <h4>Boutique</h4>
+                            <div class="w-100 mb-2">
+                                L'or obtenu via les récompenses permet aux utilisateurs Junior d'acheter des articles de la boutique.
+                                <br>
+                                Il est possible de trouver deux types d'articles dans la boutique :
+                                <ul class="my-2">
+                                    <li>Les articles multiple, qui peuvent être achetés sans limites, comme les bonus d'expérience</li>
+                                    <li>Les articles unique, qui ne peuvent être obtenu qu'une seule fois et seront débloqué pour le profil de façon permanente</li>
+                                </ul>
+                                <br>
+                            </div>
+
+                            <a class="btn btn-primary mx-1" href="{% url 'shopping-products' %}">
+                                Voir la boutique
+                            </a>
+                        </div>
+                        <div class="col-md-4 justify-content-center align-items-center">
+                            <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal0">
+                                <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                    <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+                                </div><img class="img-fluid" src="{% static 'platform/assets/img/default.png' %}" alt="sacs d'or"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="home-odd row">
+                        <div class="col-md-8">
+                            <h4>A venir : Avatars</h4>
+                            <div class="w-100 mb-2">
+                                Créez et personnalisez un avatar qui vous représentra sur la plateforme.
+                                <br>
+                                Accomplissez des missions pour obtenir de l'or vous permettant de débloquer différents accessoires et cosmétiques dans la boutique.
+                                <br>
+                                Personnalisez encore plus votre avatar et mettez le en scènes.
+                            </div>
+
+                            <a class="btn btn-primary mx-1" href="{% url 'shopping-products' %}">
+                                Voir la boutique
+                            </a>
+                        </div>
+                        <div class="col-md-4 justify-content-center align-items-center">
+                            <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal0">
+                                <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                    <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+                                </div><img class="img-fluid" src="{% static 'platform/assets/img/default.png' %}" alt="tableau de mission"/>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+    </section>
+
+    <!-- Portfolio Modal-->
+    <div class="portfolio-modal modal fade" id="portfolioModal0" tabindex="-1" role="dialog" aria-labelledby="#portfolioModal0Label" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fas fa-times"></i></span></button>
+                <div class="modal-body text-center">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <!-- Portfolio Modal - Title-->
+                                <h2 class="portfolio-modal-title text-secondary mb-0">Utilisateurs</h2>
+                                <!-- Icon Divider-->
+                                <div class="divider-custom">
+                                    <div class="divider-custom-line"></div>
+                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                    <div class="divider-custom-line"></div>
+                                </div>
+                                <!-- Portfolio Modal - Image--><img class="img-fluid rounded mb-5" src="{% static 'themes/freelancer-startboostrap/assets/img/portfolio/cabin.png' %}" alt="Log Cabin"/>
+                                <!-- Portfolio Modal - Text-->
+                                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit.Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                                <button class="btn btn-primary" href="#" data-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close Window</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-labelledby="#portfolioModal1Label" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fas fa-times"></i></span></button>
+                <div class="modal-body text-center">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <!-- Portfolio Modal - Title-->
+                                <h2 class="portfolio-modal-title text-secondary mb-0">Tasty Cake</h2>
+                                <!-- Icon Divider-->
+                                <div class="divider-custom">
+                                    <div class="divider-custom-line"></div>
+                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                    <div class="divider-custom-line"></div>
+                                </div>
+                                <!-- Portfolio Modal - Image--><img class="img-fluid rounded mb-5" src="{% static 'themes/freelancer-startboostrap/assets/img/portfolio/cake.png' %}" alt="Tasty Cake"/>
+                                <!-- Portfolio Modal - Text-->
+                                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit.Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                                <button class="btn btn-primary" href="#" data-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close Window</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-labelledby="#portfolioModal2Label" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fas fa-times"></i></span></button>
+                <div class="modal-body text-center">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <!-- Portfolio Modal - Title-->
+                                <h2 class="portfolio-modal-title text-secondary mb-0">Circus Tent</h2>
+                                <!-- Icon Divider-->
+                                <div class="divider-custom">
+                                    <div class="divider-custom-line"></div>
+                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                    <div class="divider-custom-line"></div>
+                                </div>
+                                <!-- Portfolio Modal - Image--><img class="img-fluid rounded mb-5" src="{% static 'themes/freelancer-startboostrap/assets/img/portfolio/circus.png' %}" alt="Circus Tent"/>
+                                <!-- Portfolio Modal - Text-->
+                                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit.Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                                <button class="btn btn-primary" href="#" data-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close Window</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-labelledby="#portfolioModal3Label" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fas fa-times"></i></span></button>
+                <div class="modal-body text-center">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <!-- Portfolio Modal - Title-->
+                                <h2 class="portfolio-modal-title text-secondary mb-0">Controller</h2>
+                                <!-- Icon Divider-->
+                                <div class="divider-custom">
+                                    <div class="divider-custom-line"></div>
+                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                    <div class="divider-custom-line"></div>
+                                </div>
+                                <!-- Portfolio Modal - Image--><img class="img-fluid rounded mb-5" src="{% static 'themes/freelancer-startboostrap/assets/img/portfolio/game.png' %}" alt="Controller"/>
+                                <!-- Portfolio Modal - Text-->
+                                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit.Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                                <button class="btn btn-primary" href="#" data-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close Window</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-labelledby="#portfolioModal4Label" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fas fa-times"></i></span></button>
+                <div class="modal-body text-center">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <!-- Portfolio Modal - Title-->
+                                <h2 class="portfolio-modal-title text-secondary mb-0">Locked Safe</h2>
+                                <!-- Icon Divider-->
+                                <div class="divider-custom">
+                                    <div class="divider-custom-line"></div>
+                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                    <div class="divider-custom-line"></div>
+                                </div>
+                                <!-- Portfolio Modal - Image--><img class="img-fluid rounded mb-5" src="{% static 'themes/freelancer-startboostrap/assets/img/portfolio/safe.png' %}" alt="Locked Safe"/>
+                                <!-- Portfolio Modal - Text-->
+                                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit.Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                                <button class="btn btn-primary" href="#" data-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close Window</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-labelledby="#portfolioModal5Label" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fas fa-times"></i></span></button>
+                <div class="modal-body text-center">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <!-- Portfolio Modal - Title-->
+                                <h2 class="portfolio-modal-title text-secondary mb-0">Submarine</h2>
+                                <!-- Icon Divider-->
+                                <div class="divider-custom">
+                                    <div class="divider-custom-line"></div>
+                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                    <div class="divider-custom-line"></div>
+                                </div>
+                                <!-- Portfolio Modal - Image--><img class="img-fluid rounded mb-5" src="{% static 'themes/freelancer-startboostrap/assets/img/portfolio/submarine.png' %}" alt="Submarine"/>
+                                <!-- Portfolio Modal - Text-->
+                                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit.Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                                <button class="btn btn-primary" href="#" data-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close Window</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="page-section bg-primary text-white mb-0" id="about">
+        <div class="container">
+            <!-- Stats Section Heading-->
+            <div class="text-center">
+                <h2 class="page-section-heading d-inline-block text-white">Quelques chiffres</h2>
+            </div>
+            <!-- Icon Divider-->
+            <div class="divider-custom divider-light">
+                <div class="divider-custom-line"></div>
+                <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                <div class="divider-custom-line"></div>
+            </div>
+            <!-- Stats Section Content-->
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <h4>Utilisateurs inscrits</h4>
+                    <p id="registered_user_count" class="stats-num"></p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h4>Missions créées</h4>
+                    <p id="created_mission_count" class="stats-num"></p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h4>Missions terminées</h4>
+                    <p id="ended_mission_count" class="stats-num"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="page-section" id="contact">
+        <div class="container">
+            <!-- Contact Section Heading-->
+            <div class="text-center">
+                <h2 class="page-section-heading text-secondary d-inline-block mb-0">CONTACT</h2>
+            </div>
+            <!-- Icon Divider-->
+            <div class="divider-custom">
+                <div class="divider-custom-line"></div>
+                <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                <div class="divider-custom-line"></div>
+            </div>
+            <!-- Contact Section Content-->
+            <div class="row justify-content-center">
+                <div class="col-lg-4">
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="icon-contact mb-3"><i class="fas fa-mobile-alt"></i></div>
+                        <div class="text-muted">Phone</div>
+                        <div class="lead font-weight-bold">(33) 01 02 03 04 05</div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="icon-contact mb-3"><i class="far fa-envelope"></i></div>
+                        <div class="text-muted">Email</div><a class="lead font-weight-bold" href="mailto:#">partage@contact.fr</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Homepage  javascript -->
+    <script type="text/javascript" src="{% static 'platform/js/homepage.js' %}"></script>
+    
+{% endblock %}

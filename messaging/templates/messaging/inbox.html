@@ -1,0 +1,44 @@
+<!-- MESSAGING INBOX -->
+
+{% extends 'messaging/index.html' %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>Mes conversations</h3>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="container">        
+        <div class="list-container w-100 list-group align-items-center py-2 border rounded bg-light {% if not related_users %}justify-content-center{% endif %}">
+            {% if related_users %}
+                {% for obj in related_users %}
+                    <div class="row justify-content-between w-75 list-group-item-action border-bottom py-2">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div>                                
+                                <div class="font-weight-bold">
+                                    Conversation avec {{ obj.user.first_name }} {{ obj.user.last_name }}
+                                </div>
+                                <small>Mission : {{ obj.mission.title }}</small>
+                            </div>
+
+                            {% if obj.unreads %}
+                                <span class="unread-message-icon"><i class="fas fa-comment-dots text-primary"></i></span>
+                            {% endif %}
+                        </div>
+
+                        <a class="col-md-2 btn btn-secondary mx-1 my-auto" href="{% url 'message-conv' uidb64=obj.uid %}">
+                            ouvrir
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucunes conversations disponibles</p>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock section_content %}

@@ -1,0 +1,27 @@
+<!-- MISSIONS CREATE -->
+
+{% extends 'mission/index.html' %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>Création d'une nouvelle mission</h3>
+        </div>
+    </div>
+
+    <div class="my-2 text-center">
+        <span class="font-weight-bold">Ressources disponibles : </span><span id="user-balance">{{ request.user.wallet.balance }}</span> po
+    </div>
+
+    <br/>
+
+    <div class="container">
+        {% include 'mission/includes/form.html' %}
+    </div>
+    
+    {% load static %}
+    <!-- Mission create javascript -->
+    <script type="text/javascript" src="{% static 'platform/js/mission/mission-create.js' %}"></script>
+
+{% endblock section_content %}

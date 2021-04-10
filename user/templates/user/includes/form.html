@@ -1,0 +1,49 @@
+<!-- USER FORM - LOGIN, REGISTER, PWD-FORGOT, PWD-RESET -->
+
+{% if errors %}
+    <div style="color: red;">
+        {% for key, error in errors %}
+            {% autoescape off %}
+                {{ error }}
+            {% endautoescape %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if not errors and form.errors %}
+    <div style="color: red;">
+        {% autoescape off %}
+            {{ form.errors }}
+        {% endautoescape %}
+    </div>
+{% endif %}
+
+{% if form_action == 'register' %}
+    <form action="{% url form_action %}" enctype="multipart/form-data" method="POST">
+{% elif form_action == 'pwd-reset'%}
+    <form action="{% url form_action uidb64=uid token=token %}" method="POST">
+{% else %}    
+    <form action="{% url form_action %}" method="POST">
+{% endif %}
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.help_text %}
+              <div class="form-text text-muted">
+                <small>{{ field.help_text }}</small>
+              </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    
+    <button type="submit" class="btn btn-primary">{{ submit_button_label }}</button>
+    
+    {% if form_action == 'register' or form_action == 'pwd-forgot' %}
+        <a class="btn btn-danger btn-outline mx-1" href="{% url 'login' %}">
+            Annuler
+        </a>
+    {% endif %}
+</form>

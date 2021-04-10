@@ -1,0 +1,21 @@
+<!-- USER REGISTER -->
+
+{% extends 'user/index.html' %}
+
+{% block section_content %}
+
+    <div class="row">
+        <div class="col-md-12 text-center mb-2">
+            <h3>S'inscrire</h3>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            {% include 'user/includes/form.html' %}
+        </div>
+    </div>
+    
+{% endblock section_content %}

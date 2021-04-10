@@ -1,0 +1,186 @@
+/******************************/
+/*      GLOBAL STYLES      */
+/******************************/
+ul.messages {
+    position: fixed;
+    bottom: 0;
+    list-style: none;
+}
+
+.list-container {
+    height: 500px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: thin
+}
+
+.list-container:hover body {
+    overflow: hidden;
+}
+
+.vertical-separator {
+    height: 90%;
+    border-left: 1px solid #212529;
+    border-radius: 1rem;
+    align-self: center;
+}
+
+
+/******************************/
+/*      HOMEPAGE STYLES       */
+/******************************/
+.home-odd, .home-even {
+    text-align: justify;
+    margin-bottom: 3rem;
+}
+
+.home-odd > div.col-md-8, .home-even > div.col-md-8 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-odd > div.col-md-4, .home-even > div.col-md-4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-odd {
+    flex-direction: row-reverse;
+}
+
+.stats-num {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+
+/******************************/
+/*        USER STYLES         */
+/******************************/
+#btn-profile-dc, #btn-profile-pwd {
+    width: 60%;
+}
+
+
+/******************************/
+/*      MESSAGING STYLES      */
+/******************************/
+.unread-message-icon {
+    position: absolute;
+    right: 0;
+}
+
+.message-box {
+    max-width: 50%;
+    border-radius: 5px;
+    background-color: #d8dce1;
+}
+
+.message-received {
+    line-height: 1;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+}
+
+
+/******************************/
+/*      MISSION STYLES        */
+/******************************/
+#mission-applicants-list {
+    height: 250px;
+}
+
+.active-filter {
+    background-color: #0372ca;
+    border-color: #0372ca;
+    color: #FFF;
+}
+
+
+/******************************/
+/*     SHOPPING STYLES        */
+/******************************/
+#shopping-messages {
+    z-index: 1000;
+}
+
+.product-infos {
+    max-width: 350px;
+}
+
+.product-buy {
+    max-width: 250px;
+}
+
+
+/******************************/
+/*        RESPONSIVE          */
+/******************************/
+@media (max-width: 1199px) {
+    /***** SHOPPING *****/
+    .product-buy {
+        flex-direction: column;
+    }
+    
+    .product-buy > div {
+        margin-right: 0 !important;
+    }
+}
+
+@media (max-width: 991px) {
+    /***** USER *****/
+    #btn-profile-dc, #btn-profile-pwd {
+        width: 80%;
+    }
+}
+
+@media (max-width: 767px) {
+    /***** USER *****/
+    .profile-label {
+        text-align: left !important;
+    }
+
+    .profile-value {
+        text-align: right !important;
+    }
+
+    /***** MESSAGING *****/
+    .message-box {
+        max-width: 75%;
+    }
+
+    /***** MISSION *****/
+    .mission-details-container {
+        width: 90%;
+    }
+
+    /***** SHOPPING *****/
+    .product-infos-bloc {
+        flex-direction: column;
+    }
+
+    .product-infos {
+        margin-top: .5rem;
+        margin-bottom: .5rem;
+    }
+
+    .product-buy > div {
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 575px) {
+    /***** USER *****/
+    #btn-profile-dc, #btn-profile-pwd {
+        width: 100%;
+    }
+
+    /***** MESSAGING *****/
+    .message-box {
+        max-width: 90%;
+    }
+}
