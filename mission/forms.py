@@ -46,7 +46,7 @@ class CreateMissionForm(forms.Form):
                 'class': "form-control",
             }
         ),
-        queryset=MissionCategory.objects.all(),
+        queryset=MissionCategory.objects.all().order_by('pk'),
         empty_label=None
     )
     mission_bonus_amount = forms.ChoiceField(        

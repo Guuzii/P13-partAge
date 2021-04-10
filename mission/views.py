@@ -237,6 +237,14 @@ class MissionCreate(View):
     }
 
     def get(self, request):
+        self.context['errors'] = None
+        if (request.GET.get('category_pk')):
+            category = MissionCategory.objects.get(pk=request.GET.get('category_pk'))
+            return JsonResponse(category.base_reward_amount, safe=False)
+
+        if (request.GET.get('balance')):
+            return JsonResponse(request.user.wallet.balance, safe=False)
+
         senior_type = UserType.objects.get(label__iexact="senior")
         if(request.user.user_type == senior_type):
             self.context['form'] = CreateMissionForm(user=request.user)
