@@ -18,9 +18,47 @@ ul.messages {
     overflow: hidden;
 }
 
+.vertical-separator {
+    height: 90%;
+    border-left: 1px solid #212529;
+    border-radius: 1rem;
+    align-self: center;
+}
+
 
 /******************************/
-/*      USER STYLES      */
+/*      HOMEPAGE STYLES       */
+/******************************/
+.home-odd, .home-even {
+    text-align: justify;
+    margin-bottom: 3rem;
+}
+
+.home-odd > div.col-md-8, .home-even > div.col-md-8 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-odd > div.col-md-4, .home-even > div.col-md-4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-odd {
+    flex-direction: row-reverse;
+}
+
+.stats-num {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+
+/******************************/
+/*        USER STYLES         */
 /******************************/
 #btn-profile-dc, #btn-profile-pwd {
     width: 60%;

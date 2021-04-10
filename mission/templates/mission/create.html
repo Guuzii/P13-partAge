@@ -10,10 +10,18 @@
         </div>
     </div>
 
+    <div class="my-2 text-center">
+        <span class="font-weight-bold">Ressources disponibles : </span><span id="user-balance">{{ request.user.wallet.balance }}</span> po
+    </div>
+
     <br/>
 
     <div class="container">
         {% include 'mission/includes/form.html' %}
     </div>
+    
+    {% load static %}
+    <!-- Mission create javascript -->
+    <script type="text/javascript" src="{% static 'platform/js/mission/mission-create.js' %}"></script>
 
 {% endblock section_content %}

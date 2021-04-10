@@ -33,6 +33,10 @@
             {% endif %}
         </div>
     {% endfor %}
+
+    <div class="font-weight-bold mb-3">
+        Prix total pour créer la mission : <span id="mission-total-cost"></span>
+    </div>
     
     <button type="submit" class="btn btn-primary">{{ submit_button_label }}</button>
     <a class="btn btn-danger" href="{% url 'mission-board' %}">Retour</a>

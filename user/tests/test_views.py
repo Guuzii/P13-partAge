@@ -252,7 +252,7 @@ class UserProfileTestCase(TestCase):
         response = self.client.get(reverse('user-profile'))
 
         # Test status_code/redirection and template used
-        self.assertRedirects(response=response, expected_url='/user/login/?next=%2Fuser%2F')
+        self.assertRedirects(response=response, expected_url='/user/login/')
         self.assertTemplateUsed(template_name="user/login.html/")
 
 

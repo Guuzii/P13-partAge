@@ -168,18 +168,18 @@ MISSION_STATUS = (
 
 MISSION_CATEGORY = [
     {
-        'label': "easy",
+        'label': "facile",
         'default_reward': 100,
         'xp_amount': 10
     },
     {
-        'label': "medium",
+        'label': "moyen",
         'default_reward': 200,
         'xp_amount': 20
     },
     {
-        'label': "hard",
-        'default_reward': 400,
+        'label': "difficile",
+        'default_reward': 500,
         'xp_amount': 30
     },
 ]
