@@ -22,14 +22,41 @@ class UserDocuments(admin.TabularInline):
     def view_on_site(self, obj):
         return settings.BASE_URL + obj.path
 
-    # def has_add_permission(request):
-    #     return False
+    def has_add_permission(self, request, obj=None):
+        return False
+
+
+class UserWallet(admin.TabularInline):
+    model = CustomUser
+    fieldsets = (
+        ('Utilisateur', {'fields': ('first_name', 'last_name', 'email',)}),
+    )
+    readonly_fields = ['first_name', 'last_name', 'email',]
+    extra = 0
+    verbose_name = "User"
+    
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class CustomUserWallet(admin.ModelAdmin):
+    list_display = ('pk', 'balance',)
+    readonly_fields = ['pk',]
+    search_fields = ('pk',)
+    ordering = ('pk',)
+    inlines = [UserWallet,]
+    
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class CustomUserAdmin(BaseUserAdmin):
-    # The fields to be used in displaying the User model.
-    # These override the definitions on the base UserAdmin
-    # that reference specific fields on auth.User.
     list_display = ('first_name', 'last_name', 'email', 'birthdate', 'created_at', 'is_active', 'email_validated',)
     list_filter = ('is_active', 'email_validated',)
     fieldsets = (
@@ -37,9 +64,7 @@ class CustomUserAdmin(BaseUserAdmin):
         ('Personal info', {'fields': ('first_name', 'last_name', 'birthdate', 'user_type',)}),
     )
     inlines = [UserDocuments,]
-    readonly_fields = ['email_validated', 'wallet']
-    # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
-    # overrides get_fieldsets to use this attribute when creating a user.
+    readonly_fields = ['email_validated', 'wallet']    
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -57,6 +82,7 @@ class CustomUserAdmin(BaseUserAdmin):
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Wallet, CustomUserWallet)
 
 # unregister the Group model from admin.
 admin.site.unregister(Group)
