@@ -13,4 +13,4 @@ class Wallet(models.Model):
         verbose_name_plural = _('Wallets')
 
     def __str__(self):
-        return str(self.balance)
+        return str(self.pk)

@@ -17,7 +17,7 @@ class WalletModelTestCase(TestCase):
         self.assertIsNotNone(self.new_test_wallet)
 
         # Test model __str__ returnd value
-        self.assertEqual(str(self.new_test_wallet), str(self.new_test_wallet.balance))
+        self.assertEqual(str(self.new_test_wallet), str(self.new_test_wallet.pk))
 
         # Test created wallet datas
         self.assertEqual(self.new_test_wallet.balance, 0)
