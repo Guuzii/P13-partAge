@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
     'partAgePlatform',
     'user',
     'messaging',
@@ -99,6 +100,8 @@ DATABASES = {
     }
 }
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -143,6 +146,14 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_URL = '/static/'
+
+
+# Django crontab
+CRONJOBS = [    
+    # Give regular incomes to all seniors every Monday at 2:00 AM
+    ('0 2 * * 1', 'django.core.management.call_command', ['senior_regular_income'], {}),
+]
+
 
 # Database référence datas
 USER_TYPES = (
