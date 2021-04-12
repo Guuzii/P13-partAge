@@ -57,10 +57,10 @@ class CustomUserWallet(admin.ModelAdmin):
 
 
 class CustomUserAdmin(BaseUserAdmin):
-    list_display = ('first_name', 'last_name', 'email', 'birthdate', 'created_at', 'is_active', 'email_validated',)
+    list_display = ('first_name', 'last_name', 'email', 'birthdate', 'created_at', 'is_active', 'email_validated', 'reset_password')
     list_filter = ('is_active', 'email_validated',)
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'email_validated', 'is_active', 'wallet',)}),
+        (None, {'fields': ('email', 'password', 'email_validated', 'is_active','reset_password', 'wallet',)}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'birthdate', 'user_type',)}),
     )
     inlines = [UserDocuments,]
