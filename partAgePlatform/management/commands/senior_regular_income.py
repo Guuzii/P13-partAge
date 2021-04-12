@@ -1,5 +1,10 @@
+from datetime import datetime
 from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
+
+from user.models.user_type import UserType
+from user.models.custom_user import CustomUser
+from user.models.wallet import Wallet
 
 
 class Command(BaseCommand):
@@ -18,3 +23,5 @@ class Command(BaseCommand):
         for wallet in senior_wallets:
             wallet.balance += 1000
             wallet.save()
+
+        print("Cron senior_regular_income OK - {}".format(datetime.now()))
