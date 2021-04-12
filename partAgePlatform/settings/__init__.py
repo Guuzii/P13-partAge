@@ -151,7 +151,7 @@ STATIC_URL = '/static/'
 # Django crontab
 CRONJOBS = [    
     # Give regular incomes to all seniors every Monday at 2:00 AM
-    ('0 2 * * 1', 'django.core.management.call_command', ['senior_regular_income'], {}, '>> {}'.format(BASE_DIR / 'django_cron.log')),
+    ('0 2 * * 1', 'partAgePlatform.cron.cronjob_senior_income', '>> {}'.format(BASE_DIR / 'django_cron.log')),
 ]
 
 
