@@ -47,7 +47,7 @@ class UserRegisterTestCase(TestCase):
             'first_name': "testeur",
             'last_name': "test",
             'email': "test@test.fr",
-            'birthdate': "01-01-1900",
+            'birthdate': "1900-01-01",
             'password1': "test123+",
             'password2': "test123+",
             'file_identity': file_identity,
