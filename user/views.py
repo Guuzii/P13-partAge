@@ -46,9 +46,9 @@ def handle_uploaded_file(file, filename):
 def custom_send_email(request, user, subject, template, pwd=False):
     site = get_current_site(request)
     token = password_reset_token.make_token(user) if pwd else account_activation_token.make_token(user)
-    protocol = "https" if request.is_secure else "http"
-    if site.domain in ("127.0.0.1", "localhost", "174.138.15.127",):
-        protocol = "http"
+    protocol = "http"
+    if (request.is_secure()):
+        protocol = "https"
 
     content = render_to_string(template, {
         'user': user,
@@ -102,7 +102,7 @@ class UserProfile(View):
         if (request.GET.get('statsnum')):
             mission_status_finish = MissionStatus.objects.get(label="finish")
             stats_json = {
-                'user_count': CustomUser.objects.exclude(is_superuser=True).count(),
+                'user_count': CustomUser.objects.filter(is_active=True).exclude(is_superuser=True).count(),
                 'mission_count': Mission.objects.all().count(),
                 'mission_end_count': Mission.objects.filter(status=mission_status_finish).count()
             }
