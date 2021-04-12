@@ -12,6 +12,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.template.defaultfilters import filesizeformat
 
 from user.models.custom_user import CustomUser
 from user.models.wallet import Wallet
@@ -21,7 +22,7 @@ from user.models.document import Document
 def get_allowed_file_types(input_accept=False):
     if input_accept:
         accepted_types = ""
-        for i, file_type in enumerate(settings.USER_FILE_ALLOWED_TYPES):
+        for i, file_type in enumerate(settings.USER_UPLOAD_ALLOWED_TYPES):
             if (i == 0):
                 accepted_types += "." + file_type
             else:
@@ -30,7 +31,7 @@ def get_allowed_file_types(input_accept=False):
         return accepted_types
     else:
         allowed_types = []
-        for file_type in settings.USER_FILE_ALLOWED_TYPES:
+        for file_type in settings.USER_UPLOAD_ALLOWED_TYPES:
             allowed_types.append("application/" + file_type)
             allowed_types.append("image/" + file_type)
 
@@ -74,15 +75,11 @@ class CustomUserCreationForm(UserCreationForm):
         label=_("Date de naissance"),
         widget=forms.DateInput(
             attrs={
+                'type': "date",
                 'class': "form-control", 
                 'placeholder': _("Date de naissance"),
             },
         ),
-        input_formats=[
-            '%d-%m-%Y',
-            '%d/%m/%Y',
-        ],
-        help_text=_("Saisissez une date au format 'JJ-MM-AAAA' ou 'JJ/MM/AAAA'"),
         required=True,
     )
     password1 = forms.CharField(
@@ -119,6 +116,7 @@ class CustomUserCreationForm(UserCreationForm):
                 'accept': get_allowed_file_types(True),
             },
         ),
+        help_text=_("Formats acceptés : %s -- Taille maximale : %s"%(get_allowed_file_types(True), filesizeformat(settings.USER_MAX_UPLOAD_SIZE))),
         error_messages={
             'required': "Vous devez fournir une copie de votre document d'identité (CNI/passeport)",
         }
@@ -131,6 +129,7 @@ class CustomUserCreationForm(UserCreationForm):
                 'accept': get_allowed_file_types(True),
             },
         ),
+        help_text=_("Formats acceptés : %s -- Taille maximale : %s"%(get_allowed_file_types(True), filesizeformat(settings.USER_MAX_UPLOAD_SIZE))),
         error_messages={
             'required': "Vous devez fournir une copie de votre casier judiciaire n°3",
         }
@@ -171,7 +170,16 @@ class CustomUserCreationForm(UserCreationForm):
         allowed_types = get_allowed_file_types()
 
         if (content_type not in allowed_types):
-            raise ValidationError(_("Le fichier d'identité doit être de type %s"%get_allowed_file_types(True)))
+            raise ValidationError(
+                _("Le fichier d'identité doit être de type %s"%get_allowed_file_types(True)),
+                code="identity-file"
+            )
+        else:
+            if (file_identity.size > settings.USER_MAX_UPLOAD_SIZE):
+                raise ValidationError(
+                    _("Le fichier d'identité doit faire au maximum %s. Taille du fichier actuel %s"%(filesizeformat(settings.USER_MAX_UPLOAD_SIZE), filesizeformat(file_identity.size))),
+                    code="file-size"
+                )
 
         return file_identity
 
@@ -182,7 +190,16 @@ class CustomUserCreationForm(UserCreationForm):
         allowed_types = get_allowed_file_types()
 
         if (content_type not in allowed_types):
-            raise ValidationError(_("Le fichier casier judiciaire doit être de type %s"%get_allowed_file_types(True)))
+            raise ValidationError(
+                _("Le fichier casier judiciaire doit être de type %s"%get_allowed_file_types(True)),
+                code="file-type"
+            )
+        else:
+            if (file_criminal.size > settings.USER_MAX_UPLOAD_SIZE):
+                raise ValidationError(
+                    _("Le fichier casier judiciaire doit faire au maximum %s. Taille du fichier actuel %s"%(filesizeformat(settings.USER_MAX_UPLOAD_SIZE), filesizeformat(file_criminal.size))),
+                    code="file-size"
+                )
 
         return file_criminal
 
