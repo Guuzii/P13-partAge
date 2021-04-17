@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db.models import Q
 
 from user.models.user_type import UserType
 from user.models.custom_user import CustomUser
@@ -6,7 +7,7 @@ from user.models.wallet import Wallet
 
 def cronjob_senior_income():
     senior_type = UserType.objects.get(label='senior')
-    senior_users = CustomUser.objects.filter(user_type=senior_type)
+    senior_users = CustomUser.objects.filter(Q(user_type=senior_type) & Q(is_active=True))
     senior_wallets_pk = []
 
     for senior in senior_users:
