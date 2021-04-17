@@ -49,7 +49,7 @@ Most of the apps have their own custom command that can be directly called with 
 
 The main app partAgePlatform contain a special custom commands that allow to give an app name as arguments to call the corresponding custom command. Use the command as following :
 ```
-python3 manage.py update_refs <appName>
+    python3 manage.py update_refs <appName>
 ```
 
 Those commands can be used to apply changes in settings refs datas to DB.
@@ -57,7 +57,8 @@ Those commands can be used to apply changes in settings refs datas to DB.
 ## Usage
 
 In a terminal, place yourself in the programm directory and activate the virtual env, make sure your PostgreSQL server is running then execute this command :
-
+```
     python3 manage.py runserver
+```
 
 Open your browser and navigate to the url specified in the output.
