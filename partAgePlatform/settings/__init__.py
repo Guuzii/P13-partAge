@@ -149,6 +149,8 @@ STATIC_URL = '/static/'
 
 
 # Django crontab
+CRONTAB_DJANGO_SETTINGS_MODULE = 'partAgePlatform.settings.production'
+CRONTAB_COMMAND_SUFFIX = '2>&1'
 CRONJOBS = [    
     # Give regular incomes to all seniors every Monday at 2:00 AM
     ('0 2 * * 1', 'partAgePlatform.cron.cronjob_senior_income', '>> {}'.format(BASE_DIR / 'django_cron.log')),

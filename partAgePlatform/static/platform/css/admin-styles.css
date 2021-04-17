@@ -1,12 +1,12 @@
-#customuser_form .field-is_active div {
+#customuser_form .field-is_active div, #customuser_form .field-reset_password div {
     display: flex;
 }
 
-#customuser_form .field-is_active input {
+#customuser_form .field-is_active input, #customuser_form .field-reset_password input {
     order: 2;
 }
 
-#customuser_form .field-is_active label {
+#customuser_form .field-is_active label, #customuser_form .field-reset_password label {
     width: 160px;
     display: block;
     padding:  4px 10px 0 0;
