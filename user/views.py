@@ -147,9 +147,9 @@ class UserRegister(View):
                 uploaded_filename = handle_uploaded_file(file, filename)
 
                 if (key == "file_identity"):
-                    document_type = DocumentType.objects.get(label=settings.DOCUMENT_TYPES[0])
+                    document_type = DocumentType.objects.get(label=settings.DOCUMENT_TYPES[0]) # document_type = identity
                 else:
-                    document_type = DocumentType.objects.get(label=settings.DOCUMENT_TYPES[1])
+                    document_type = DocumentType.objects.get(label=settings.DOCUMENT_TYPES[1]) # document_type = criminal
 
                 document = Document(path=settings.USER_STATIC_UPLOAD_DIR + uploaded_filename, user=user, document_type=document_type)
                 document.save()
